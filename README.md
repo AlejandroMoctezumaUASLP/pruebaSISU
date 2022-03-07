@@ -1,70 +1,19 @@
-# Getting Started with Create React App
+# Avance del proyecto de diagnóstico
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Me enfoque en hacer la parte del backend con Node.js de la aplicación. Después de evaluar la forma en que podría integrar MongoDB con la nube (MongoDB Atlas), reutilice un código de backend de uno de los proyectos de mi Github Personal y lo modifiqué para este proyecto.
 
-## Available Scripts
+Las librerías de Node que utilice fueron Express, Mongoose, Cors y dotenv.
 
-In the project directory, you can run:
+## Estructura del Backend
 
-### `npm start`
+El archivo principal del backend (index.js) describe una API REST. El backend se divide en tres directorios: Modelos, Controladores y Servicios.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Los modelos describen las 4 colecciones descritas en el proyecto anterior (Pais, Estado, Ciudad, Usuario). Los paises, estados y ciudades del backend anterior ya fueron integradas a la base de datos en MongoDB. Dicha BD puede ser accesada desde la nube sin ningún problema.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Los controladores describen el comportamiento esperado para cada una de las rutas del API REST. Agregue métodos para crear, modificar y borrar registros en cada una de las colecciones. Además, reimplemente los métodos del backend en Spring; los métodos de petición HTTP de dichos métodos fueron modificados para que no existiese conflicto con los métodos adicionales.
 
-### `npm test`
+Los servicios son usados para encangarse de la interacción con la base de datos.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Ejecución del backend
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Como siempre, antes de ejecutar el proyecto, hay que instalar las librerías del proyecto con "npm install". El servidor se inicia con "npm start"
