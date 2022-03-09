@@ -50,10 +50,14 @@
  * @return {boolean} Determina si la Edad es válida o no
  */
 export const verificarEdad = ( edad ) => {
-  if(Number.isInteger(edad))
+  if(Number.isInteger(parseInt(edad))){
+    console.log("Edad Válida: " + edad);
     return true;
-  else
+  }
+  else{
+    console.log("Edad no Válida: " + edad);
     return false;
+  }
 };
 
 /**************************

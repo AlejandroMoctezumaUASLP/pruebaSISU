@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { DropdownForm, SubmitButton } from "../components";
-// import { CrudConsultorios } from "../utils";
-import styles from "../App.module.css";
+import FormHelperText from "@mui/material/FormHelperText";
+import { CrudRegistro } from "../utils";
+import styles from "./PagesStyle.module.css";
 import { TextField } from "@mui/material";
 import { verificarEdad, verificarId, verificarNombre} from '../funciones';
 
@@ -49,7 +50,7 @@ export const RegistroPage = () => {
   // FUNCIONES DE LA PÁGINA
 
   // Formulario para crear usuario. Al terminar, se recarga la página
-  const submitForm = () => {
+  const submitForm = async () => {
     const body = { ciudad, nombre, edad };
     let res = "";
 
@@ -108,16 +109,22 @@ export const RegistroPage = () => {
     // Se verifica que no hayan errores en la forma
     // Se verifica también que el mensaje de error de nombre no esté vacío
     if (!errorPais && !errorEstado && !errorCiudad && !errorEdad && !errorNombre && errorNombreMensaje !== ""){
-      console.log("Usuario Creado!");
+      // Se crea el usuario
+      res = await CrudRegistro.createUsuario(JSON.stringify(body));
 
       // Se limpian los valores del formulario
-      setPais("");
-      setEstado("");
-      setCiudad("");
-      setNombre("");
-      setEdad(18);
-      
-      setLoading(true);
+      if (res !== "")
+      {
+        console.log("Usuario Creado!");
+
+        setPais("");
+        setEstado("");
+        setCiudad("");
+        setNombre("");
+        setEdad(18);
+        
+        setLoading(true);
+      }
     }
   };
 
@@ -218,9 +225,10 @@ export const RegistroPage = () => {
   }, [loading]);
 
   return (
-    <div>
-      <div style={{display: loading ? "none" : "block"}}>
+    <div className={`${styles.containerMain}`}>
+      <div className={`${styles.pantallaRegistro}`} style={{display: loading ? "none" : "block"}}>
       {/* Formulario de Registro */}
+      <h1 className={`${styles.tituloPantalla}`}>Registro de Usuario</h1>
       <TextField
         required
         id="outlined-required"
@@ -230,9 +238,9 @@ export const RegistroPage = () => {
           setNombre(event.target.value);
         }}
         error={errorNombre}
-        helperText={errorNombreMensaje}
-        sx={{ paddingBottom: "10px" }}
+        sx={{ paddingBottom: "10px", m: 1, width: 390 }}
       />
+      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorNombreMensaje}</FormHelperText>
       <TextField
         required
         id="outlined-required"
@@ -241,13 +249,13 @@ export const RegistroPage = () => {
         value={edad}
         onChange={(event) => {
           const value = event.target.value;
-          const setValue = (value >= 18 && value <= 99) ? value : edad;
+          const setValue = (value >= 18 && value <= 99 && value.length <= 2) ? value : edad;
           setEdad(setValue);
         }}
         error={errorEdad}
-        helperText={errorEdadMensaje}
-        sx={{ paddingBottom: "10px" }}
+        sx={{ paddingBottom: "10px", m: 1, width: 390 }}
       />
+      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEdadMensaje}</FormHelperText>
       <DropdownForm
         label="Pais"
         opciones={listaPaises}
@@ -259,8 +267,8 @@ export const RegistroPage = () => {
           setPais(value);
         }}
         errorState={errorPais}
-        errorText={errorPaisMensaje}
       />
+      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorPaisMensaje}</FormHelperText>
       <DropdownForm
         label="Estado"
         opciones={listaEstados}
@@ -272,8 +280,8 @@ export const RegistroPage = () => {
           setEstado(value);
         }}
         errorState={errorEstado}
-        errorText={errorEstadoMensaje}
       />
+      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEstadoMensaje}</FormHelperText>
       <DropdownForm
         label="Ciudad"
         opciones={listaCiudades}
@@ -285,16 +293,17 @@ export const RegistroPage = () => {
           setCiudad(value);
         }}
         errorState={errorCiudad}
-        errorText={errorCiudadMensaje}
       />
+      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorCiudadMensaje}</FormHelperText>
       <SubmitButton title="Enviar" onClick={submitForm}></SubmitButton>
       </div>
-      <div style={{display: loading ? "block" : "none"}}> 
+      <div className={`${styles.pantallaRegistro}`} style={{display: loading ? "block" : "none"}}> 
+        <h1 className={`${styles.tituloPantalla}`}>Usuarios del Sistema:</h1>
         {listaUsuarios.map((item, key) => (
-          <div key={key}>
-            <p>Nombre: {item.nombre}</p>
-            <p>Edad: {item.edad}</p>
-            <p>Ciudad: {item.ciudad.nombre}</p>
+          <div key={key} className={`${styles.datosUsuario}`}>
+            <p className={`${styles.camposDatosUsuario}`}><b>Nombre:</b> {item.nombre}</p>
+            <p className={`${styles.camposDatosUsuario}`}><b>Edad:</b> {item.edad}</p>
+            <p className={`${styles.camposDatosUsuario}`}><b>Ciudad:</b> {item.ciudad.nombre}</p>
           </div>
         ))}
       </div>
