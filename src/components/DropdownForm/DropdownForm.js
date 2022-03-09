@@ -1,6 +1,7 @@
 import * as React from "react";
 import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
 import InputLabel from "@mui/material/InputLabel";
 import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
@@ -24,11 +25,14 @@ import Select from "@mui/material/Select";
  *  />
  */
 export function DropdownForm(props) {
-  const { opciones, label, values, onChangeFunction } = props;
+  const { opciones, label, values, onChangeFunction, errorState, errorText } = props;
 
   return (
     <div>
-      <FormControl sx={{ m: 1, width: 390 }}>
+      <FormControl 
+        sx={{ m: 1, width: 390 }}
+        error={errorState}
+      >
         <InputLabel id="demo-multiple-checkbox-label">{label}</InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"
@@ -48,6 +52,7 @@ export function DropdownForm(props) {
           ))}
         </Select>
       </FormControl>
+      <FormHelperText>{errorText}</FormHelperText>
     </div>
   );
 }

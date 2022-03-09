@@ -14,7 +14,7 @@ const { Usuario } = require('../models');
  */
 module.exports = {
     create: async (body) => new Usuario(body).save(),
-    getAll: async () => Usuario.find({}),
+    getAll: async () => Usuario.find({}).populate("ciudad"),
     update: async (_id, body) => Usuario.findByIdAndUpdate(_id,body),
     delete: async (id) => Usuario.findByIdAndRemove(id)
 }

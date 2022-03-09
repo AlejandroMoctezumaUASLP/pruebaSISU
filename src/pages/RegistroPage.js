@@ -3,6 +3,7 @@ import { DropdownForm, SubmitButton } from "../components";
 // import { CrudConsultorios } from "../utils";
 import styles from "../App.module.css";
 import { TextField } from "@mui/material";
+import { verificarEdad, verificarId, verificarNombre} from '../funciones';
 
 /**
  * Página de registro de nuevos usuarios.
@@ -18,41 +19,106 @@ import { TextField } from "@mui/material";
  * @member
  */
 export const RegistroPage = () => {
-  // Datos a mostrar y modales
+  // ESTADOS DE PÁGINA
   const [listaPaises, setListaPaises] = useState([]);
   const [listaEstados, setListaEstados] = useState([]);
   const [listaCiudades, setListaCiudades] = useState([]);
   const [listaUsuarios, setListaUsuarios] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // Estados del formulario
-  const [pais, setPais] = useState(0);
-  const [estado, setEstado] = useState(0);
-  const [ciudad, setCiudad] = useState(0);
+  // ESTADOS DE FORMULARIO
+  // Datos de Formulario
+  const [pais, setPais] = useState("");
+  const [estado, setEstado] = useState("");
+  const [ciudad, setCiudad] = useState("");
   const [nombre, setNombre] = useState("");
-  const [edad, setEdad] = useState(0);
+  const [edad, setEdad] = useState(18);
 
-  // Formulario para crear consultorio.
-  // Al terminar, se recarga la página
-  const submitForm = async (e) => {
-    e.preventDefault();
-    const body = { pais, estado, ciudad, nombre, edad };
+  // Validación de formulario
+  const [errorPais, setErrorPais] = useState(false);
+  const [errorPaisMensaje, setErrorPaisMensaje] = useState("");
+  const [errorEstado, setErrorEstado] = useState(false);
+  const [errorEstadoMensaje, setErrorEstadoMensaje] = useState("");
+  const [errorCiudad, setErrorCiudad] = useState(false);
+  const [errorCiudadMensaje, setErrorCiudadMensaje] = useState("");
+  const [errorNombre, setErrorNombre] = useState(false);
+  const [errorNombreMensaje, setErrorNombreMensaje] = useState("");
+  const [errorEdad, setErrorEdad] = useState(false);
+  const [errorEdadMensaje, setErrorEdadMensaje] = useState("");
+
+  // FUNCIONES DE LA PÁGINA
+
+  // Formulario para crear usuario. Al terminar, se recarga la página
+  const submitForm = () => {
+    const body = { ciudad, nombre, edad };
     let res = "";
 
-    // SE CREA UN NUEVO USUARIO
-
-    if (res !== "") {
-      // Se limpian los valores
-      setPais(0);
-      setEstado(0);
-      setCiudad(0);
-      setNombre("");
-      setEdad(0);
-
-      setLoading(true);
+    // SE HACE LA VALIDACIÓN DEL FORMULARIO
+    // Validación de País
+    if (!verificarId(pais)){
+        setErrorPais(true);
+        setErrorPaisMensaje("Falta seleccionar País!");
+    }
+    else{
+        setErrorPais(false);
+        setErrorPaisMensaje("");
     }
 
-    // SE MUESTRAN LOS USUARIOS DEL SISTEMA
+    // Validación de Estado
+    if (!verificarId(estado)){
+        setErrorEstado(true);
+        setErrorEstadoMensaje("Falta seleccionar Estado!");
+    }
+    else{
+        setErrorEstado(false);
+        setErrorEstadoMensaje("");
+    }
+
+    // Validación de Ciudad
+    if (!verificarId(ciudad)){
+        setErrorCiudad(true);
+        setErrorCiudadMensaje("Falta seleccionar Ciudad!");
+    }
+    else{
+        setErrorCiudad(false);
+        setErrorCiudadMensaje("");
+    }
+
+    // Validación de Edad
+    if (!verificarEdad(edad)){
+        setErrorEdad(true);
+        setErrorEdadMensaje("Edad no válida!");
+    }
+    else{
+        setErrorEdad(false);
+        setErrorEdadMensaje("");
+    }
+
+    // Validación de Nombre
+    const mensaje = verificarNombre(nombre);
+    if (mensaje == "Válido"){
+        setErrorNombre(false);
+        setErrorNombreMensaje(" ");
+    }
+    else{
+        setErrorNombre(true);
+        setErrorNombreMensaje(mensaje);
+    }
+
+    // Se verifica que no hayan errores en la forma
+    // Se verifica también que el mensaje de error de nombre no esté vacío
+    if (!errorPais && !errorEstado && !errorCiudad && !errorEdad && !errorNombre && errorNombreMensaje !== ""){
+      console.log("Usuario Creado!");
+
+      // Se limpian los valores del formulario
+      setPais("");
+      setEstado("");
+      setCiudad("");
+      setNombre("");
+      setEdad(18);
+      
+      setLoading(true);
+    }
   };
 
   // Cuando se carga por primera vez la página, se carga una lista de paises
@@ -89,15 +155,19 @@ export const RegistroPage = () => {
       )
         .then((response) => response.json())
         .then((result) => setListaEstados(result.result))
-        .catch((error) => console.log("error", error));
+        .catch((error) => console.log("No hay ID de Pais"));
     }
+
+    // Se limpian los valores seleccionados
+    setEstado("");
+    setCiudad("");
 
     // Se limpian los dropdowns
     setListaEstados([]);
     setListaCiudades([]);
-
+    
     // Si se selecciona un país, se actualiza el dropdown de los estados
-    if (pais !== 0)
+    if (pais !== "")
         obtenerEstados();
   }, [pais]);
 
@@ -115,14 +185,17 @@ export const RegistroPage = () => {
       )
         .then((response) => response.json())
         .then((result) => setListaCiudades(result.result))
-        .catch((error) => console.log("error", error));
+        .catch((error) => console.log("No hay ID de Estado"));
     }
 
-    // Se limpian el dropdown
+    // Se limpia el valor seleccionado
+    setCiudad("");
+
+    // Se limpia el dropdown
     setListaCiudades([]);
 
     // Si se selecciona un estado, se actualiza el dropdown de ciudades
-    if (estado !== 0)
+    if (estado !== "")
         obtenerCiudades();
   }, [estado]);
 
@@ -140,13 +213,13 @@ export const RegistroPage = () => {
       )
         .then((response) => response.json())
         .then((result) => setListaUsuarios(result.result))
-        .catch((error) => console.log("error", error));
-      setLoading(false);
+        .catch((error) => console.log("Hubo un error"));
     }
   }, [loading]);
 
   return (
     <div>
+      <div style={{display: loading ? "none" : "block"}}>
       {/* Formulario de Registro */}
       <TextField
         required
@@ -156,16 +229,23 @@ export const RegistroPage = () => {
         onChange={(event) => {
           setNombre(event.target.value);
         }}
+        error={errorNombre}
+        helperText={errorNombreMensaje}
         sx={{ paddingBottom: "10px" }}
       />
       <TextField
         required
         id="outlined-required"
         label="Edad"
+        type="number"
         value={edad}
         onChange={(event) => {
-          setEdad(event.target.value);
+          const value = event.target.value;
+          const setValue = (value >= 18 && value <= 99) ? value : edad;
+          setEdad(setValue);
         }}
+        error={errorEdad}
+        helperText={errorEdadMensaje}
         sx={{ paddingBottom: "10px" }}
       />
       <DropdownForm
@@ -178,6 +258,8 @@ export const RegistroPage = () => {
           } = event;
           setPais(value);
         }}
+        errorState={errorPais}
+        errorText={errorPaisMensaje}
       />
       <DropdownForm
         label="Estado"
@@ -189,6 +271,8 @@ export const RegistroPage = () => {
           } = event;
           setEstado(value);
         }}
+        errorState={errorEstado}
+        errorText={errorEstadoMensaje}
       />
       <DropdownForm
         label="Ciudad"
@@ -200,8 +284,20 @@ export const RegistroPage = () => {
           } = event;
           setCiudad(value);
         }}
+        errorState={errorCiudad}
+        errorText={errorCiudadMensaje}
       />
       <SubmitButton title="Enviar" onClick={submitForm}></SubmitButton>
-    </div>    
+      </div>
+      <div style={{display: loading ? "block" : "none"}}> 
+        {listaUsuarios.map((item, key) => (
+          <div key={key}>
+            <p>Nombre: {item.nombre}</p>
+            <p>Edad: {item.edad}</p>
+            <p>Ciudad: {item.ciudad.nombre}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
