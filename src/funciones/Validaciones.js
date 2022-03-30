@@ -50,14 +50,10 @@
  * @return {boolean} Determina si la Edad es válida o no
  */
 export const verificarEdad = ( edad ) => {
-  if(Number.isInteger(parseInt(edad))){
-    console.log("Edad Válida: " + edad);
+  if(Number.isInteger(parseInt(edad)))
     return true;
-  }
-  else{
-    console.log("Edad no Válida: " + edad);
+  else
     return false;
-  }
 };
 
 /**************************
@@ -71,3 +67,27 @@ export const verificarId = ( id ) => {
   else
     return false;
 };
+
+/**************************
+ * Verifica que el email tenga el formato correcto
+ * @param {string} password El email a validar
+ * @return {bolean} Determina si el password es válido o no
+ */
+export const verificarEmail = ( email ) => {
+  if (email && email.includes("@") && email.includes(".com") && email[0] !== "@")
+    return true;
+  else
+    return false;
+}
+
+/**************************
+ * Verifica que el password sea de al menos 6 caracteres
+ * @param {string} password El password a validar
+ * @return {bolean} Determina si el password es válido o no
+ */
+export const verificarPassword = ( password ) => {
+  if (password.length >= 6)
+    return true;
+  else
+    return false;
+}

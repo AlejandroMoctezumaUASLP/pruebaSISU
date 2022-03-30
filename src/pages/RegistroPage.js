@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from 'react-router-dom'
 import { DropdownForm, SubmitButton } from "../components";
-import FormHelperText from "@mui/material/FormHelperText";
+import { useAuth } from "../contexts"
+import { verificarEdad, verificarId, verificarNombre, verificarEmail, verificarPassword } from '../funciones';
 import { CrudRegistro } from "../utils";
 import styles from "./PagesStyle.module.css";
+import FormHelperText from "@mui/material/FormHelperText";
 import { TextField } from "@mui/material";
-import { verificarEdad, verificarId, verificarNombre} from '../funciones';
 
 /**
  * Página de registro de nuevos usuarios.
@@ -24,8 +26,7 @@ export const RegistroPage = () => {
   const [listaPaises, setListaPaises] = useState([]);
   const [listaEstados, setListaEstados] = useState([]);
   const [listaCiudades, setListaCiudades] = useState([]);
-  const [listaUsuarios, setListaUsuarios] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   // ESTADOS DE FORMULARIO
   // Datos de Formulario
@@ -33,6 +34,8 @@ export const RegistroPage = () => {
   const [estado, setEstado] = useState("");
   const [ciudad, setCiudad] = useState("");
   const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [edad, setEdad] = useState(18);
 
   // Validación de formulario
@@ -44,19 +47,35 @@ export const RegistroPage = () => {
   const [errorCiudadMensaje, setErrorCiudadMensaje] = useState("");
   const [errorNombre, setErrorNombre] = useState(false);
   const [errorNombreMensaje, setErrorNombreMensaje] = useState("");
+  const [errorEmail, setErrorEmail] = useState(false);
+  const [errorEmailMensaje, setErrorEmailMensaje] = useState("");
+  const [errorPassword, setErrorPassword] = useState(false);
+  const [errorPasswordMensaje, seterrorPasswordMensaje] = useState("");
   const [errorEdad, setErrorEdad] = useState(false);
   const [errorEdadMensaje, setErrorEdadMensaje] = useState("");
+
+  // Contextos y Navegador
+  const {signUp} = useAuth();
+  const navigate = useNavigate();
 
   // FUNCIONES DE LA PÁGINA
 
   // Formulario para crear usuario. Al terminar, se recarga la página
-  const submitForm = async () => {
-    const body = { ciudad, nombre, edad };
-    let res = "";
+  const submitForm = (e) => {
+    e.preventDefault();
+
+    // Se guardan los valores de las verificaciones del formulario
+    const paisVerificado = verificarId(pais);
+    const estadoVerificado = verificarId(estado);
+    const ciudadVerificada = verificarId(ciudad);
+    const edadVerificada = verificarEdad(edad);
+    const emailVerificado = verificarEmail(email);
+    const passwordVerificado = verificarPassword(password);
+    const nombreVerificado = verificarNombre(nombre);
 
     // SE HACE LA VALIDACIÓN DEL FORMULARIO
     // Validación de País
-    if (!verificarId(pais)){
+    if (!paisVerificado){
         setErrorPais(true);
         setErrorPaisMensaje("Falta seleccionar País!");
     }
@@ -66,7 +85,7 @@ export const RegistroPage = () => {
     }
 
     // Validación de Estado
-    if (!verificarId(estado)){
+    if (!estadoVerificado){
         setErrorEstado(true);
         setErrorEstadoMensaje("Falta seleccionar Estado!");
     }
@@ -76,7 +95,7 @@ export const RegistroPage = () => {
     }
 
     // Validación de Ciudad
-    if (!verificarId(ciudad)){
+    if (!ciudadVerificada){
         setErrorCiudad(true);
         setErrorCiudadMensaje("Falta seleccionar Ciudad!");
     }
@@ -86,7 +105,7 @@ export const RegistroPage = () => {
     }
 
     // Validación de Edad
-    if (!verificarEdad(edad)){
+    if (!edadVerificada){
         setErrorEdad(true);
         setErrorEdadMensaje("Edad no válida!");
     }
@@ -95,36 +114,41 @@ export const RegistroPage = () => {
         setErrorEdadMensaje("");
     }
 
-    // Validación de Nombre
-    const mensaje = verificarNombre(nombre);
-    if (mensaje == "Válido"){
-        setErrorNombre(false);
-        setErrorNombreMensaje(" ");
+    // Validación de Email
+    if (!emailVerificado){
+      setErrorEmail(true);
+      setErrorEmailMensaje("Email no válido!");
     }
     else{
-        setErrorNombre(true);
-        setErrorNombreMensaje(mensaje);
+      setErrorEmail(false);
+      setErrorEmailMensaje("");
     }
 
-    // Se verifica que no hayan errores en la forma
-    // Se verifica también que el mensaje de error de nombre no esté vacío
-    if (!errorPais && !errorEstado && !errorCiudad && !errorEdad && !errorNombre && errorNombreMensaje !== ""){
-      // Se crea el usuario
-      res = await CrudRegistro.createUsuario(JSON.stringify(body));
+    // Validación de Password
+    if (!passwordVerificado){
+      setErrorPassword(true);
+      seterrorPasswordMensaje("Password de mínimo 6 caractéres!");
+    }
+    else{
+      setErrorPassword(false);
+      seterrorPasswordMensaje("");
+    }
 
-      // Se limpian los valores del formulario
-      if (res !== "")
-      {
-        console.log("Usuario Creado!");
+    // Validación de Nombre
+    if (nombreVerificado === "Válido"){
+      setErrorNombre(false);
+      setErrorNombreMensaje("");
+    }
+    else{
+      setErrorNombre(true);
+      setErrorNombreMensaje(nombreVerificado);
+    }
 
-        setPais("");
-        setEstado("");
-        setCiudad("");
-        setNombre("");
-        setEdad(18);
-        
-        setLoading(true);
-      }
+    // Si todas las verificaciones pasaron, se inicia el proceso de crear un usuario
+    // y logearlo en el sistema.
+    if (paisVerificado && estadoVerificado && ciudadVerificada && edadVerificada && 
+      emailVerificado && passwordVerificado && nombreVerificado === "Válido"){
+      setSubmitting(true);
     }
   };
 
@@ -206,106 +230,140 @@ export const RegistroPage = () => {
         obtenerCiudades();
   }, [estado]);
 
-  // Cuando se realiza una acción, se muestran la lista de usuarios de la página
+  // Con los datos del usuario, se crea un usuario en la BD local como también
+  // en Firebase Auth
   useEffect(() => {
-    const requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
+    async function registrarUsuario() {
+      const body = { ciudad, nombre, edad };
+      const userData = { email, password };
+      let res = "";
 
-    if (loading) {
-      fetch(
-        "http://localhost:8000/servicio/usuarios",
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((result) => setListaUsuarios(result.result))
-        .catch((error) => console.log("Hubo un error"));
+      // Se crea el usuario en la BD local
+      res = await CrudRegistro.createUsuario(JSON.stringify(body));
+
+      // Se crea el usuario en Firebase Auth y se logea
+      await signUp(userData.email, userData.password);
+
+      // Se limpian los valores del formulario
+      if (res !== "")
+      {
+        setPais("");
+        setEstado("");
+        setCiudad("");
+        setNombre("");
+        setEdad(18);
+        setEmail("");
+        setPassword("");
+        
+        setSubmitting(false);
+        navigate("/");
+      }
     }
-  }, [loading]);
+
+    if(submitting)
+      registrarUsuario();
+  },[submitting])
 
   return (
     <div className={`${styles.containerMain}`}>
-      <div className={`${styles.pantallaRegistro}`} style={{display: loading ? "none" : "block"}}>
-      {/* Formulario de Registro */}
-      <h1 className={`${styles.tituloPantalla}`}>Registro de Usuario</h1>
-      <TextField
-        required
-        id="outlined-required"
-        label="Nombre"
-        value={nombre}
-        onChange={(event) => {
-          setNombre(event.target.value);
-        }}
-        error={errorNombre}
-        sx={{ paddingBottom: "10px", m: 1, width: 390 }}
-      />
-      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorNombreMensaje}</FormHelperText>
-      <TextField
-        required
-        id="outlined-required"
-        label="Edad"
-        type="number"
-        value={edad}
-        onChange={(event) => {
-          const value = event.target.value;
-          const setValue = (value >= 18 && value <= 99 && value.length <= 2) ? value : edad;
-          setEdad(setValue);
-        }}
-        error={errorEdad}
-        sx={{ paddingBottom: "10px", m: 1, width: 390 }}
-      />
-      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEdadMensaje}</FormHelperText>
-      <DropdownForm
-        label="Pais"
-        opciones={listaPaises}
-        values={pais}
-        onChangeFunction={(event) => {
-          const {
-            target: { value },
-          } = event;
-          setPais(value);
-        }}
-        errorState={errorPais}
-      />
-      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorPaisMensaje}</FormHelperText>
-      <DropdownForm
-        label="Estado"
-        opciones={listaEstados}
-        values={estado}
-        onChangeFunction={(event) => {
-          const {
-            target: { value },
-          } = event;
-          setEstado(value);
-        }}
-        errorState={errorEstado}
-      />
-      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEstadoMensaje}</FormHelperText>
-      <DropdownForm
-        label="Ciudad"
-        opciones={listaCiudades}
-        values={ciudad}
-        onChangeFunction={(event) => {
-          const {
-            target: { value },
-          } = event;
-          setCiudad(value);
-        }}
-        errorState={errorCiudad}
-      />
-      <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorCiudadMensaje}</FormHelperText>
-      <SubmitButton title="Enviar" onClick={submitForm}></SubmitButton>
-      </div>
-      <div className={`${styles.pantallaRegistro}`} style={{display: loading ? "block" : "none"}}> 
-        <h1 className={`${styles.tituloPantalla}`}>Usuarios del Sistema:</h1>
-        {listaUsuarios.map((item, key) => (
-          <div key={key} className={`${styles.datosUsuario}`}>
-            <p className={`${styles.camposDatosUsuario}`}><b>Nombre:</b> {item.nombre}</p>
-            <p className={`${styles.camposDatosUsuario}`}><b>Edad:</b> {item.edad}</p>
-            <p className={`${styles.camposDatosUsuario}`}><b>Ciudad:</b> {item.ciudad.nombre}</p>
-          </div>
-        ))}
+      <div className={`${styles.pantallaRegistro}`}>
+        {/* Formulario de Registro */}
+        <h1 className={`${styles.tituloPantalla}`}>Registro de Usuario</h1>
+        <TextField
+          required
+          id="outlined-required"
+          label="Nombre"
+          value={nombre}
+          onChange={(event) => {
+            setNombre(event.target.value);
+          }}
+          error={errorNombre}
+          sx={{ paddingBottom: "10px", m: 1, width: 390 }}
+        />
+        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorNombreMensaje}</FormHelperText>
+        <TextField
+          required
+          id="outlined-required"
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(event) => {
+            setEmail(event.target.value);
+          }}
+          error={errorEmail}
+          sx={{ paddingBottom: "10px", m: 1, width: 390 }}
+        />
+        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEmailMensaje}</FormHelperText>
+        <TextField
+          required
+          id="outlined-password-input"
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(event) => {
+            setPassword(event.target.value);
+          }}
+          error={errorPassword}
+          sx={{ paddingBottom: "10px", m: 1, width: 390 }}
+        />
+        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorPasswordMensaje}</FormHelperText>
+        <TextField
+          required
+          id="outlined-required"
+          label="Edad"
+          type="number"
+          value={edad}
+          onChange={(event) => {
+            const value = event.target.value;
+            const setValue = (value >= 18 && value <= 99 && value.length <= 2) ? value : edad;
+            setEdad(setValue);
+          }}
+          error={errorEdad}
+          sx={{ paddingBottom: "10px", m: 1, width: 390 }}
+        />
+        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEdadMensaje}</FormHelperText>
+        <DropdownForm
+          label="Pais"
+          opciones={listaPaises}
+          values={pais}
+          onChangeFunction={(event) => {
+            const {
+              target: { value },
+            } = event;
+            setPais(value);
+          }}
+          errorState={errorPais}
+        />
+        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorPaisMensaje}</FormHelperText>
+        <DropdownForm
+          label="Estado"
+          opciones={listaEstados}
+          values={estado}
+          onChangeFunction={(event) => {
+            const {
+              target: { value },
+            } = event;
+            setEstado(value);
+          }}
+          errorState={errorEstado}
+        />
+        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEstadoMensaje}</FormHelperText>
+        <DropdownForm
+          label="Ciudad"
+          opciones={listaCiudades}
+          values={ciudad}
+          onChangeFunction={(event) => {
+            const {
+              target: { value },
+            } = event;
+            setCiudad(value);
+          }}
+          errorState={errorCiudad}
+        />
+        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorCiudadMensaje}</FormHelperText>
+        <SubmitButton onClick={ submitForm } title="Enviar" />
+        <p className={`${styles.camposDatosUsuario}`}>¿Ya tienes una cuenta?
+        <Link to="/login"> Login</Link></p>
       </div>
     </div>
   );
