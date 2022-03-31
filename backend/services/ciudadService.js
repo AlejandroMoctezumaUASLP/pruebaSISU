@@ -1,5 +1,5 @@
-import { db } from "../firebase.js";
-import { 
+const { db } = require("../firebase.js");
+const { 
     collection,
     doc,
     addDoc,
@@ -8,7 +8,7 @@ import {
     where,
     updateDoc,
     deleteDoc
-} from "firebase/firestore";
+} = require("firebase/firestore");
 
 /**
  * Implementa los servicios (conexiones a BD) de las rutas de /ciudades:
@@ -23,22 +23,24 @@ import {
  * @author Alejandro Moctezuma Luna
  */
 
-export const createCiudad = async (body) => addDoc(collection(db, "ciudades"), {...body});
-export const getCiudadesById = async (idEstado) => {
-    // Se inicializa la lista de ciudades ya formateada
-    let ciudades = [];
-
-    // Se obtienen todos los documentos en "ciudades" que coincidan con el id de Estado
-    const ciudadesRef = collection(db, "ciudades");
-    const ciudadesQuery = query(ciudadesRef,where("estado","==",idEstado));
-    const ciudadesSnapshot = await getDocs(ciudadesQuery);
-
-    // Se va formateando la lista de estados a regresar en el API REST
-    ciudadesSnapshot.forEach(doc => {
-        const datos = doc.data()
-        ciudades.push({_id: doc.id, ...datos});
-    })
-    return ciudades;
-};
-export const updateCiudad = async (id, body) => updateDoc(doc(db,"ciudades", id), {...body});
-export const deleteCiudad = async (id) => deleteDoc(doc(db, "ciudades", id));
+module.exports = {
+    createCiudad: async (body) => addDoc(collection(db, "ciudades"), {...body}),
+    getCiudadesById: async (idEstado) => {
+        // Se inicializa la lista de ciudades ya formateada
+        let ciudades = [];
+    
+        // Se obtienen todos los documentos en "ciudades" que coincidan con el id de Estado
+        const ciudadesRef = collection(db, "ciudades");
+        const ciudadesQuery = query(ciudadesRef,where("estado","==",idEstado));
+        const ciudadesSnapshot = await getDocs(ciudadesQuery);
+    
+        // Se va formateando la lista de estados a regresar en el API REST
+        ciudadesSnapshot.forEach(doc => {
+            const datos = doc.data()
+            ciudades.push({_id: doc.id, ...datos});
+        })
+        return ciudades;
+    },
+    updateCiudad: async (id, body) => updateDoc(doc(db,"ciudades", id), {...body}),
+    deleteCiudad: async (id) => deleteDoc(doc(db, "ciudades", id))
+}

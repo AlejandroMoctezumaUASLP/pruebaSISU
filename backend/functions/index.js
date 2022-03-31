@@ -1,11 +1,3 @@
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
 /*******************
  * Código principal del backend. Se describe la estructura de un API REST
  * tanto con los métodos originales del servicio web original como con algunos

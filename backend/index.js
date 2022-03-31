@@ -44,40 +44,14 @@
  */
 
 // Importación de librerías y controladores
-import express from "express";
-import cors from "cors";
-
-// Controlador de Pais
-import { 
-    crearPais,
-    obtenerPaises,
-    actualizarPais,
-    borrarPais
-} from "./controllers/paisController.js";
-
-// Controlador de Estado
-import { 
-    crearEstado,
-    obtenerEstados,
-    actualizarEstado,
-    borrarEstado
-} from "./controllers/estadoController.js";
-
-// Controlador de Ciudad
-import { 
-    crearCiudad,
-    obtenerCiudades,
-    actualizarCiudad,
-    borrarCiudad
-} from "./controllers/ciudadController.js";
-
-// Controlador de Usuario
-import { 
-    crearUsuario,
-    obtenerUsuarios,
-    actualizarUsuario,
-    borrarUsuario
-} from "./controllers/usuarioController.js";
+const express = require("express");
+const cors = require("cors");
+const { 
+    paisController, 
+    estadoController, 
+    ciudadController, 
+    usuarioController
+} = require("./controllers");
 
 // Se configura Express y Cors para hacer funcionar el API REST
 const app = express();
@@ -89,28 +63,28 @@ app.use(cors());
 const router = express.Router();
 
 // CRUD de Paises
-router.post("/paises", crearPais);
-router.get("/paises", obtenerPaises);
-router.put("/paises/:id", actualizarPais);
-router.delete("/paises/:id", borrarPais);
+router.post("/paises", paisController.crearPais);
+router.get("/paises", paisController.obtenerPaises);
+router.put("/paises/:id", paisController.actualizarPais);
+router.delete("/paises/:id", paisController.borrarPais);
 
 // CRUD de Estados
-router.post("/estados", crearEstado);
-router.get("/estados/:id", obtenerEstados);
-router.put("/estados/:id", actualizarEstado);
-router.delete("/estados/:id", borrarEstado);
+router.post("/estados", estadoController.crearEstado);
+router.get("/estados/:id", estadoController.obtenerEstados);
+router.put("/estados/:id", estadoController.actualizarEstado);
+router.delete("/estados/:id", estadoController.borrarEstado);
 
 // CRUD de Ciudades
-router.post("/ciudades", crearCiudad);
-router.get("/ciudades/:id", obtenerCiudades);
-router.put("/ciudades/:id", actualizarCiudad);
-router.delete("/ciudades/:id", borrarCiudad);
+router.post("/ciudades", ciudadController.crearCiudad);
+router.get("/ciudades/:id", ciudadController.obtenerCiudades);
+router.put("/ciudades/:id", ciudadController.actualizarCiudad);
+router.delete("/ciudades/:id", ciudadController.borrarCiudad);
 
 // CRUD de Usuarios
-router.post("/usuarios", crearUsuario);
-router.get("/usuarios", obtenerUsuarios);
-router.put("/usuarios/:id", actualizarUsuario);
-router.delete("/usuarios/:id", borrarUsuario);
+router.post("/usuarios", usuarioController.crearUsuario);
+router.get("/usuarios", usuarioController.obtenerUsuarios);
+router.put("/usuarios/:id", usuarioController.actualizarUsuario);
+router.delete("/usuarios/:id", usuarioController.borrarUsuario);
 
 // Se pasa el router al api
 app.use('/servicio', router);

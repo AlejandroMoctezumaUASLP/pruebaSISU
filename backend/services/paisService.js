@@ -1,5 +1,5 @@
-import { db } from "../firebase.js";
-import { 
+const { db } = require("../firebase.js");
+const { 
     collection,
     doc,
     addDoc,
@@ -7,7 +7,7 @@ import {
     collectionGroup,
     updateDoc,
     deleteDoc
-} from "firebase/firestore";
+} = require("firebase/firestore");
 
 /**
  * Implementa los servicios (conexiones a BD) de las rutas de /paises:
@@ -22,20 +22,22 @@ import {
  * @author Alejandro Moctezuma Luna
  */
 
-export const createPais = async (body) => addDoc(collection(db, "paises"), {...body});
-export const getAllPaises = async () => {
-    // Se inicializa la lista de paises ya formateada
-    let paises = [];
-
-    // Se obtienen todos los documentos en "paises"
-    const paisesSnapshot = await getDocs(collectionGroup(db, "paises"));
-
-    // Se va formateando la lista de paises a regresar en el API REST
-    paisesSnapshot.forEach(doc => {
-        const datos = doc.data()
-        paises.push({_id: doc.id, ...datos});
-    })
-    return paises;
-};
-export const updatePais = async (id, body) => updateDoc(doc(db,"paises", id), {...body});
-export const deletePais = async (id) => deleteDoc(doc(db, "paises", id));
+module.exports = {
+    createPais: async (body) => addDoc(collection(db, "paises"), {...body}),
+    getAllPaises: async () => {
+        // Se inicializa la lista de paises ya formateada
+        let paises = [];
+    
+        // Se obtienen todos los documentos en "paises"
+        const paisesSnapshot = await getDocs(collectionGroup(db, "paises"));
+    
+        // Se va formateando la lista de paises a regresar en el API REST
+        paisesSnapshot.forEach(doc => {
+            const datos = doc.data()
+            paises.push({_id: doc.id, ...datos});
+        })
+        return paises;
+    },
+    updatePais: async (id, body) => updateDoc(doc(db,"paises", id), {...body}),
+    deletePais: async (id) => deleteDoc(doc(db, "paises", id))
+}

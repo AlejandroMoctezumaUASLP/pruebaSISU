@@ -1,5 +1,5 @@
-import { db } from "../firebase.js";
-import { 
+const { db } = require("../firebase.js");
+const { 
     collection,
     doc,
     addDoc,
@@ -8,7 +8,7 @@ import {
     where,
     updateDoc,
     deleteDoc
-} from "firebase/firestore";
+} = require("firebase/firestore");
 
 /**
  * Implementa los servicios (conexiones a BD) de las rutas de /estados:
@@ -23,22 +23,24 @@ import {
  * @author Alejandro Moctezuma Luna
  */
 
-export const createEstado = async (body) => addDoc(collection(db, "estados"), {...body});
-export const getEstadosById = async (idPais) => {
-    // Se inicializa la lista de estados ya formateada
-    let estados = [];
-
-    // Se obtienen todos los documentos en "estados" que coincidan con el id de Pais
-    const estadosRef = collection(db, "estados");
-    const estadosQuery = query(estadosRef,where("pais","==",idPais));
-    const estadosSnapshot = await getDocs(estadosQuery);
-
-    // Se va formateando la lista de estados a regresar en el API REST
-    estadosSnapshot.forEach(doc => {
-        const datos = doc.data()
-        estados.push({_id: doc.id, ...datos});
-    })
-    return estados;
-};
-export const updateEstado = async (id, body) => updateDoc(doc(db,"estados", id), {...body});
-export const deleteEstado = async (id) => deleteDoc(doc(db, "estados", id));
+module.exports = {
+    createEstado: async (body) => addDoc(collection(db, "estados"), {...body}),
+    getEstadosById: async (idPais) => {
+        // Se inicializa la lista de estados ya formateada
+        let estados = [];
+    
+        // Se obtienen todos los documentos en "estados" que coincidan con el id de Pais
+        const estadosRef = collection(db, "estados");
+        const estadosQuery = query(estadosRef,where("pais","==",idPais));
+        const estadosSnapshot = await getDocs(estadosQuery);
+    
+        // Se va formateando la lista de estados a regresar en el API REST
+        estadosSnapshot.forEach(doc => {
+            const datos = doc.data()
+            estados.push({_id: doc.id, ...datos});
+        })
+        return estados;
+    },
+    updateEstado: async (id, body) => updateDoc(doc(db,"estados", id), {...body}),
+    deleteEstado: async (id) => deleteDoc(doc(db, "estados", id))
+}

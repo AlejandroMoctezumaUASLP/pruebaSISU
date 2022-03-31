@@ -1,9 +1,4 @@
-import { 
-    createCiudad,
-    getCiudadesById,
-    updateCiudad,
-    deleteCiudad
-} from "../services/ciudadService.js";
+const { ciudadService } = require("../services");
 
 /**
  * Implementa los controladores de las rutas de /ciudades:
@@ -16,48 +11,47 @@ import {
  * @exports ciudadController
  */
 
-export const crearCiudad = async (req, res) => {
-    const { 
-        estado,
-        nombre
-    } = req.body;
-    let ciudad = { 
-        estado,
-        nombre 
-    };
-    const result = await createCiudad(ciudad);
-    res.status(201).json({
-        result
-    });
-};
-
-export const obtenerCiudades = async (req, res) => {
-    const id = req.params.id;
-    const result = await getCiudadesById(id);
-    res.status(200).json({
-        result
-    });
-};
-
-export const actualizarCiudad = async (req, res) => {
-    const { 
-        estado,
-        nombre 
-    } = req.body;
-    const id = req.params.id;
-    const result = await updateCiudad(id, {
-        estado,
-        nombre
-    });
-    res.status(200).json({
-        result
-    });
-};
-
-export const borrarCiudad = async (req, res) => {
-    const id = req.params.id;
-    const result = await deleteCiudad(id);
-    res.status(200).json({
-        result
-    });
-};
+module.exports = {
+    crearCiudad: async (req, res) => {
+        const { 
+            estado,
+            nombre
+        } = req.body;
+        let ciudad = { 
+            estado,
+            nombre 
+        };
+        const result = await ciudadService.createCiudad(ciudad);
+        res.status(201).json({
+            result
+        });
+    },
+    obtenerCiudades: async (req, res) => {
+        const id = req.params.id;
+        const result = await ciudadService.getCiudadesById(id);
+        res.status(200).json({
+            result
+        });
+    },
+    actualizarCiudad: async (req, res) => {
+        const { 
+            estado,
+            nombre 
+        } = req.body;
+        const id = req.params.id;
+        const result = await ciudadService.updateCiudad(id, {
+            estado,
+            nombre
+        });
+        res.status(200).json({
+            result
+        });
+    },
+    borrarCiudad: async (req, res) => {
+        const id = req.params.id;
+        const result = await ciudadService.deleteCiudad(id);
+        res.status(200).json({
+            result
+        });
+    }
+}
