@@ -15,6 +15,8 @@ export const SubmitButton = (props) => {
       sx={{
         backgroundColor: "#CACACA",
         padding: "10px",
+        marginTop: "20px",
+        display: "block"
       }}
       onClick={ onClick }
     >

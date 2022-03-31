@@ -20,7 +20,7 @@ export function ProtectedRoute({children}) {
 
     if(loading) return <h1>Loading</h1>;
 
-    if(!user) return <Navigate to="/register" />;
+    if(!user) return <Navigate to="/login" />;
 
     return <>{children}</>;
 }

@@ -2,8 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 import { DropdownForm, SubmitButton } from "../components";
 import { useAuth } from "../contexts"
-import { verificarEdad, verificarId, verificarNombre, verificarEmail, verificarPassword } from '../funciones';
-import { CrudRegistro } from "../utils";
+import { 
+  verificarEdad, 
+  verificarId, 
+  verificarNombre, 
+  verificarEmail, 
+  verificarPassword,
+  verificarNoNull 
+} from '../funciones';
+import { CrudRegistro, subirImagen, descargarImagen } from "../utils";
 import styles from "./PagesStyle.module.css";
 import FormHelperText from "@mui/material/FormHelperText";
 import { TextField } from "@mui/material";
@@ -37,6 +44,7 @@ export const RegistroPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [edad, setEdad] = useState(18);
+  const [profile, setProfile] = useState(null)
 
   // Validación de formulario
   const [errorPais, setErrorPais] = useState(false);
@@ -53,6 +61,8 @@ export const RegistroPage = () => {
   const [errorPasswordMensaje, seterrorPasswordMensaje] = useState("");
   const [errorEdad, setErrorEdad] = useState(false);
   const [errorEdadMensaje, setErrorEdadMensaje] = useState("");
+  const [errorProfile, setErrorProfile] = useState(false);
+  const [errorProfileMensaje, setErrorProfileMensaje] = useState("");
 
   // Contextos y Navegador
   const {signUp} = useAuth();
@@ -72,6 +82,7 @@ export const RegistroPage = () => {
     const emailVerificado = verificarEmail(email);
     const passwordVerificado = verificarPassword(password);
     const nombreVerificado = verificarNombre(nombre);
+    const imagenVerificada = verificarNoNull(profile);
 
     // SE HACE LA VALIDACIÓN DEL FORMULARIO
     // Validación de País
@@ -144,10 +155,20 @@ export const RegistroPage = () => {
       setErrorNombreMensaje(nombreVerificado);
     }
 
+    // Validar Imagen
+    if (!imagenVerificada){
+      setErrorProfile(true);
+      setErrorProfileMensaje("No hay imagen!");
+    }
+    else{
+      setErrorProfile(false);
+      setErrorProfileMensaje("");
+    }
+
     // Si todas las verificaciones pasaron, se inicia el proceso de crear un usuario
     // y logearlo en el sistema.
     if (paisVerificado && estadoVerificado && ciudadVerificada && edadVerificada && 
-      emailVerificado && passwordVerificado && nombreVerificado === "Válido"){
+      emailVerificado && passwordVerificado && nombreVerificado === "Válido" && imagenVerificada){
       setSubmitting(true);
     }
   };
@@ -234,14 +255,18 @@ export const RegistroPage = () => {
   // en Firebase Auth
   useEffect(() => {
     async function registrarUsuario() {
-      const body = { ciudad, nombre, edad };
+      let body = { ciudad, nombre, edad };
       const userData = { email, password };
-      let res = "";
+      let res = " ";
+
+      // Se crea la imagen de perfil y se agrega la URL al body
+      const urlImagen = await subirImagen(profile);
+      body = {...body, urlImagen}
 
       // Se crea el usuario en la BD local
       res = await CrudRegistro.createUsuario(JSON.stringify(body));
 
-      // Se crea el usuario en Firebase Auth y se logea
+      // // Se crea el usuario en Firebase Auth y se logea
       await signUp(userData.email, userData.password);
 
       // Se limpian los valores del formulario
@@ -361,6 +386,16 @@ export const RegistroPage = () => {
           errorState={errorCiudad}
         />
         <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorCiudadMensaje}</FormHelperText>
+        <input
+          accept="image/*"
+          id="faceImage"
+          type="file"
+          className={{display: "block"}}
+          onChange={({ target }) => {
+            setProfile(target.files[0]);
+          }}
+        />
+        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorProfileMensaje}</FormHelperText>
         <SubmitButton onClick={ submitForm } title="Enviar" />
         <p className={`${styles.camposDatosUsuario}`}>¿Ya tienes una cuenta?
         <Link to="/login"> Login</Link></p>

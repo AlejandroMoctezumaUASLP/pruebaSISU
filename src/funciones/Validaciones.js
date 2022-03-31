@@ -91,3 +91,15 @@ export const verificarPassword = ( password ) => {
   else
     return false;
 }
+
+/**************************
+ * Verifica que no sea null
+ * @param {image} image La imagen a validar
+ * @return {bolean} Determina si el password es válido o no
+ */
+ export const verificarNoNull = ( imagen ) => {
+  if (imagen)
+    return true;
+  else
+    return false;
+}

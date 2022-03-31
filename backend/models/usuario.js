@@ -30,6 +30,14 @@ const eventSchema = mongoose.Schema({
             'Falta la edad'
         ],
     },
+    avatar: {
+        type: String,
+        maxlength: 500,
+        required: [
+            true,
+            'Falta imagen de perfil'
+        ]
+    },
 }, {collection: 'Usuario'});
 
 // Exportación del Modelo y su schema

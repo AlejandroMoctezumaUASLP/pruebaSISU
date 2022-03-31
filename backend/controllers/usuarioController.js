@@ -15,13 +15,15 @@ module.exports = {
         const { 
             ciudad,
             nombre,
-            edad
+            edad,
+            urlImagen
         } = req.body;
 
         let usuario = { 
             ciudad,
             nombre,
-            edad
+            edad,
+            avatar: urlImagen
         };
 
         const result = await usuarioService.create(usuario);
@@ -41,14 +43,16 @@ module.exports = {
         const { 
             ciudad,
             nombre,
-            edad
+            edad,
+            urlImagen
         } = req.body;
         const id = req.params.id;
 
         const result = await usuarioService.update({_id: id}, {
             ciudad,
             nombre,
-            edad
+            edad,
+            avatar: urlImagen
         });
 
         res.status(200).json({

@@ -10,13 +10,14 @@
   padding-top: 5%;
 }
 
-.datosUsuario{
+.datosUsuario {
   background-color: #ff8a50;
-  height: 120px;
+  height: 320px;
+  margin-bottom: 50px;
   width: 390px;
 }
 
-.pantallaRegistro{
+.pantallaRegistro {
   border-color: rgb(59, 59, 59);
   border-radius: 10px;
   border-style: solid;

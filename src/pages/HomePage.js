@@ -42,6 +42,7 @@ export const HomePage = () => {
             <h2 className={`${styles.tituloPantalla}`}>Usuarios del Sistema:</h2>
             {listaUsuarios.map((item, key) => (
             <div key={key} className={`${styles.datosUsuario}`}>
+                <img src={item.avatar} style={{height: "180px"}} />
                 <p className={`${styles.camposDatosUsuario}`}><b>Nombre:</b> {item.nombre}</p>
                 <p className={`${styles.camposDatosUsuario}`}><b>Edad:</b> {item.edad}</p>
                 <p className={`${styles.camposDatosUsuario}`}><b>Ciudad:</b> {item.ciudad.nombre}</p>
