@@ -1,5 +1,6 @@
-const { estadoService } = require('../services');
-const mongoose = require('mongoose');
+import { estadoService } from "../services";
+// const { estadoService } = require('../services');
+// const mongoose = require('mongoose');
 
 /**
  * Implementa los controladores de las rutas de /estados:

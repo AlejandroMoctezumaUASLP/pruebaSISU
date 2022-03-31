@@ -1,4 +1,13 @@
-const { Pais } = require('../models');
+import { db } from "../firebase.js";
+import { 
+    collection,
+    doc,
+    addDoc,
+    getDocs,
+    collectionGroup,
+    updateDoc,
+    deleteDoc
+} from "firebase/firestore";
 
 /**
  * Implementa los servicios (conexiones a BD) de las rutas de /paises:
@@ -12,9 +21,16 @@ const { Pais } = require('../models');
  * 
  * @author Alejandro Moctezuma Luna
  */
-module.exports = {
-    create: async (body) => new Pais(body).save(),
-    getAll: async () => Pais.find({}),
-    update: async (_id, body) => Pais.findByIdAndUpdate(_id,body),
-    delete: async (id) => Pais.findByIdAndRemove(id)
-}
+
+export const createPais = async (body) => addDoc(collection(db, "paises"), {...body});
+export const getAllPaises = async () => {
+    let paises = [];
+    const paisesSnapshot = await getDocs(collectionGroup(db, "paises"));
+    paisesSnapshot.forEach(doc => {
+        const datos = doc.data()
+        paises.push({_id: doc.id, ...datos});
+    })
+    return paises;
+};
+export const updatePais = async (id, body) => updateDoc(doc(db,"paises", id), {...body});
+export const deletePais = async (id) => deleteDoc(doc(db, "paises", id));

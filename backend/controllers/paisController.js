@@ -1,7 +1,12 @@
-const { paisService } = require('../services');
+import { 
+    createPais,
+    getAllPaises,
+    updatePais,
+    deletePais
+} from "../services/paisService.js";
 
 /**
- * Implementa los controladores de las rutas de /pacientes:
+ * Implementa los controladores de las rutas de /paises:
  * <ul style="list-style: none;">
  *  <li> crearPais: Crea un país.
  *  <li> obtenerPaises: Regresa todos los paises.
@@ -10,44 +15,38 @@ const { paisService } = require('../services');
  * </ul>
  * @exports paisController
  */
-module.exports = {
-    crearPais: async (req, res) => {
-        const { nombre } = req.body;
 
-        let pais = { nombre };
+export const crearPais = async (req, res) => {
+    const { nombre } = req.body;
+    let pais = { nombre };
+    const result = await createPais(pais);
+    res.status(201).json({
+        result
+    });
+};
 
-        const result = await paisService.create(pais);
+export const obtenerPaises = async (req, res) => {
+    const result = await getAllPaises();
+    res.status(200).json({
+        result
+    });
+};
 
-        res.status(201).json({
-            result
-        });
-    },
-    obtenerPaises: async (req, res) => {
-        const result = await paisService.getAll();
+export const actualizarPais = async (req, res) => {
+    const { nombre } = req.body;
+    const id = req.params.id;
+    const result = await updatePais(id, {
+        nombre
+    });
+    res.status(200).json({
+        result
+    });
+};
 
-        res.status(200).json({
-            result
-        });
-    },
-    actualizarPais: async (req, res) => {
-        const { nombre } = req.body;
-        const id = req.params.id;
-
-        const result = await paisService.update({_id: id}, {
-            nombre
-        });
-
-        res.status(200).json({
-            result
-        });
-    },
-    borrarPais: async (req, res) => {
-        const id = req.params.id;
-
-        const result = await paisService.delete({_id: id});
-
-        res.status(200).json({
-            result
-        });
-    }
-}
+export const borrarPais = async (req, res) => {
+    const id = req.params.id;
+    const result = await deletePais(id);
+    res.status(200).json({
+        result
+    });
+};

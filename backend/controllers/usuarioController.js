@@ -1,4 +1,4 @@
-const { usuarioService } = require('../services');
+import { usuarioService } from "../services";
 
 /**
  * Implementa los controladores de las rutas de /usuarios:

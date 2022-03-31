@@ -1,4 +1,13 @@
-const { Estado } = require('../models');
+// const { Estado } = require('../models');
+import { db } from "../firebase";
+import { 
+    collection,
+    doc,
+    addDoc,
+    getDocs,
+    updateDoc,
+    deleteDoc
+} from "firebase/firestore";
 
 /**
  * Implementa los servicios (conexiones a BD) de las rutas de /estados:

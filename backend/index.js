@@ -43,14 +43,15 @@
  * @author Alejandro Moctezuma Luna
  */
 
-// Importación de librerías
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-require('dotenv').config()
-
-// Importación de controladores
-const {paisController, estadoController, ciudadController, usuarioController} = require('./controllers');
+// Importación de librerías y controladores
+import express from "express";
+import cors from "cors";
+import { 
+    crearPais,
+    obtenerPaises,
+    actualizarPais,
+    borrarPais
+} from "./controllers/paisController.js";
 
 // Se configura Express y Cors para hacer funcionar el API REST
 const app = express();
@@ -61,42 +62,29 @@ app.use(cors());
 // Se crea el arreglo de rutas
 const router = express.Router();
 
-// Inicialización de la conexión con la BD en Mongo (MongoDB Atlas)
-// El string de conexión está definido en un archivo .env
-mongoose
-    .connect(
-        process.env.MONGO_CONNECTION_STRING
-    )
-    .then(() => {
-        console.log("Connected to database!");
-    })
-    .catch(() => {
-        console.log("Connection failed!");
-    });
-
 // CRUD de Paises
-router.post("/paises", paisController.crearPais);
-router.get("/paises", paisController.obtenerPaises);
-router.put("/paises/:id", paisController.actualizarPais);
-router.delete("/paises/:id", paisController.borrarPais);
+router.post("/paises", crearPais);
+router.get("/paises", obtenerPaises);
+router.put("/paises/:id", actualizarPais);
+router.delete("/paises/:id", borrarPais);
 
 // CRUD de Estados
-router.post("/estados", estadoController.crearEstado);
-router.get("/estados/:id", estadoController.obtenerEstado);
-router.put("/estados/:id", estadoController.actualizarEstado);
-router.delete("/estados/:id", estadoController.borrarEstado);
+// router.post("/estados", estadoController.crearEstado);
+// router.get("/estados/:id", estadoController.obtenerEstado);
+// router.put("/estados/:id", estadoController.actualizarEstado);
+// router.delete("/estados/:id", estadoController.borrarEstado);
 
 // CRUD de Ciudades
-router.post("/ciudades", ciudadController.crearCiudad);
-router.get("/ciudades/:id", ciudadController.obtenerCiudad);
-router.put("/ciudades/:id", ciudadController.actualizarCiudad);
-router.delete("/ciudades/:id", ciudadController.borrarCiudad);
+// router.post("/ciudades", ciudadController.crearCiudad);
+// router.get("/ciudades/:id", ciudadController.obtenerCiudad);
+// router.put("/ciudades/:id", ciudadController.actualizarCiudad);
+// router.delete("/ciudades/:id", ciudadController.borrarCiudad);
 
 // CRUD de Usuarios
-router.post("/usuarios", usuarioController.crearUsuario);
-router.get("/usuarios", usuarioController.obtenerUsuarios);
-router.put("/usuarios/:id", usuarioController.actualizarUsuario);
-router.delete("/usuarios/:id", usuarioController.borrarUsuario);
+// router.post("/usuarios", usuarioController.crearUsuario);
+// router.get("/usuarios", usuarioController.obtenerUsuarios);
+// router.put("/usuarios/:id", usuarioController.actualizarUsuario);
+// router.delete("/usuarios/:id", usuarioController.borrarUsuario);
 
 // Se pasa el router al api
 app.use('/servicio', router);
@@ -105,5 +93,3 @@ app.use('/servicio', router);
 app.listen(8000, () => {
     console.log('Listening port: 8000');
 });
-    
-    
