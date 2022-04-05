@@ -1,5 +1,8 @@
+// React
 import React from "react";
-import Button from "@mui/material/Button";
+
+// Importaciones Prime React
+import { Button } from 'primereact/button';
 
 /**
  * Botón para poder enviar los datos del Formulario
@@ -8,19 +11,16 @@ import Button from "@mui/material/Button";
  * @property {string} title Nombre de la etiqueta de submit
  */
 export const SubmitButton = (props) => {
-  const { onClick, title } = props;
+  const { onClick, label } = props;
 
   return (
     <Button
-      sx={{
-        backgroundColor: "#CACACA",
+      style={{
         padding: "10px",
         marginTop: "20px",
-        display: "block"
       }}
-      onClick={ onClick }
-    >
-      {title}
-    </Button>
+      label={label}
+      onClick={onClick} 
+    />
   );
 };

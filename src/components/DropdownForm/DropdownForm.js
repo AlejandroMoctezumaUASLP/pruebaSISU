@@ -1,12 +1,8 @@
-import * as React from "react";
-import Checkbox from "@mui/material/Checkbox";
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import InputLabel from "@mui/material/InputLabel";
-import ListItemText from "@mui/material/ListItemText";
-import MenuItem from "@mui/material/MenuItem";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import Select from "@mui/material/Select";
+// React
+import React from "react";
+
+// Importaciones Prime React
+import { Dropdown } from 'primereact/dropdown';
 
 /**
  * Input dropdown que permite seleccionar más de una opción en su interior.
@@ -25,34 +21,22 @@ import Select from "@mui/material/Select";
  *  />
  */
 export function DropdownForm(props) {
-  const { opciones, label, values, onChangeFunction, errorState, errorText } = props;
+  const { options, label, value, onChange, errorState, errorText } = props;
 
   return (
-    <div>
-      <FormControl 
-        sx={{ m: 1, width: 390 }}
-        error={errorState}
-      >
-        <InputLabel id="demo-multiple-checkbox-label">{label}</InputLabel>
-        <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
-          value={values}
-          onChange={onChangeFunction}
-          input={<OutlinedInput label={label} />}
-          MenuProps={{
-            style: {
-              maxHeight: 48 * 4.5 + 8,
-              width: 250,
-            },
-          }}
-        >
-          {opciones.map((item, key) => (
-            <MenuItem key={key} value={item._id}>{item.nombre}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <FormHelperText>{errorText}</FormHelperText>
+    <div style={{marginBottom: "30px"}}>
+      <span className="p-float-label">
+          <Dropdown 
+            inputId={`dropdown-${label}`} 
+            options={options} 
+            optionLabel="nombre"
+            optionValue="_id"
+            onChange={onChange} 
+            value={value} 
+          />
+          <label htmlFor={`dropdown-${label}`}>{label}</label>
+      </span>
+      {errorState && <small className="p-error">{errorText}</small>}
     </div>
   );
 }

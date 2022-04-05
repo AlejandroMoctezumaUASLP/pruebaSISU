@@ -1,3 +1,4 @@
+// React
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 import { DropdownForm, SubmitButton } from "../components";
@@ -11,7 +12,15 @@ import {
   verificarNoNull 
 } from '../funciones';
 import { CrudRegistro, subirImagen, descargarImagen } from "../utils";
+
+// Modulo CSS
 import styles from "./PagesStyle.module.css";
+
+// Importaciones Prime React
+import { InputNumber } from 'primereact/inputnumber';
+import { InputText } from 'primereact/inputtext';
+import { Password } from 'primereact/password';
+
 import FormHelperText from "@mui/material/FormHelperText";
 import { TextField } from "@mui/material";
 
@@ -294,98 +303,100 @@ export const RegistroPage = () => {
       <div className={`${styles.pantallaRegistro}`}>
         {/* Formulario de Registro */}
         <h1 className={`${styles.tituloPantalla}`}>Registro de Usuario</h1>
-        <TextField
-          required
-          id="outlined-required"
-          label="Nombre"
-          value={nombre}
-          onChange={(event) => {
-            setNombre(event.target.value);
-          }}
-          error={errorNombre}
-          sx={{ paddingBottom: "10px", m: 1, width: 390 }}
-        />
-        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorNombreMensaje}</FormHelperText>
-        <TextField
-          required
-          id="outlined-required"
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(event) => {
-            setEmail(event.target.value);
-          }}
-          error={errorEmail}
-          sx={{ paddingBottom: "10px", m: 1, width: 390 }}
-        />
-        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEmailMensaje}</FormHelperText>
-        <TextField
-          required
-          id="outlined-password-input"
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(event) => {
-            setPassword(event.target.value);
-          }}
-          error={errorPassword}
-          sx={{ paddingBottom: "10px", m: 1, width: 390 }}
-        />
-        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorPasswordMensaje}</FormHelperText>
-        <TextField
-          required
-          id="outlined-required"
-          label="Edad"
-          type="number"
-          value={edad}
-          onChange={(event) => {
-            const value = event.target.value;
-            const setValue = (value >= 18 && value <= 99 && value.length <= 2) ? value : edad;
-            setEdad(setValue);
-          }}
-          error={errorEdad}
-          sx={{ paddingBottom: "10px", m: 1, width: 390 }}
-        />
-        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEdadMensaje}</FormHelperText>
+
+        <span className="p-float-label" style={{marginBottom: "30px"}}>
+          <InputText 
+            id="nombre" 
+            value={nombre} 
+            onChange={(event) => {
+              setNombre(event.target.value);
+            }}
+          />
+          <label htmlFor="nombre">Nombre</label>
+        </span>
+        {errorNombre && <small className="p-error">{errorNombreMensaje}</small>}
+        
+        <span className="p-float-label" style={{marginBottom: "30px"}}>
+          <InputText 
+            id="email" 
+            value={email} 
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
+          />
+          <label htmlFor="email">Email</label>
+        </span>
+        {errorEmail && <small className="p-error">{errorEmailMensaje}</small>}
+
+        <span className="p-float-label" style={{marginBottom: "30px"}}>
+          <Password 
+            id="password" 
+            value={password} 
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+            feedback={false}
+          />
+          <label htmlFor="password">Password</label>
+        </span>
+        {errorPassword && <small className="p-error">{errorPasswordMensaje}</small>}
+
+        <span className="p-float-label" style={{marginBottom: "30px"}}>
+          <InputNumber 
+            inputId="edad" 
+            value={edad} 
+            onValueChange={(event) => {
+              setEdad(event.target.value)
+            }} 
+            mode="decimal" 
+            useGrouping={false} 
+          />
+          <label htmlFor="edad">Edad</label>
+        </span>
+        {errorEdad && <small className="p-error">{errorEdadMensaje}</small>}
+        
         <DropdownForm
           label="Pais"
-          opciones={listaPaises}
-          values={pais}
-          onChangeFunction={(event) => {
+          options={listaPaises}
+          value={pais}
+          onChange={(event) => {
             const {
               target: { value },
             } = event;
             setPais(value);
           }}
           errorState={errorPais}
+          errorText={errorPaisMensaje}
         />
-        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorPaisMensaje}</FormHelperText>
+        
         <DropdownForm
           label="Estado"
-          opciones={listaEstados}
-          values={estado}
-          onChangeFunction={(event) => {
+          options={listaEstados}
+          value={estado}
+          onChange={(event) => {
             const {
               target: { value },
             } = event;
             setEstado(value);
           }}
           errorState={errorEstado}
+          errorText={errorEstadoMensaje}
         />
-        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorEstadoMensaje}</FormHelperText>
+        
         <DropdownForm
           label="Ciudad"
-          opciones={listaCiudades}
-          values={ciudad}
-          onChangeFunction={(event) => {
+          options={listaCiudades}
+          value={ciudad}
+          onChange={(event) => {
             const {
               target: { value },
             } = event;
             setCiudad(value);
           }}
           errorState={errorCiudad}
+          errorText={errorCiudadMensaje}
         />
-        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorCiudadMensaje}</FormHelperText>
+        
         <input
           accept="image/*"
           id="faceImage"
@@ -395,8 +406,10 @@ export const RegistroPage = () => {
             setProfile(target.files[0]);
           }}
         />
+        
+        {/* Acciones de la página */}
         <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorProfileMensaje}</FormHelperText>
-        <SubmitButton onClick={ submitForm } title="Enviar" />
+        <SubmitButton onClick={ submitForm } label="Enviar" />
         <p className={`${styles.camposDatosUsuario}`}>¿Ya tienes una cuenta?
         <Link to="/login"> Login</Link></p>
       </div>

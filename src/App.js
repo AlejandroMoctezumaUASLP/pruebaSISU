@@ -3,6 +3,10 @@ import { HomePage, RegistroPage, LoginPage } from './pages';
 import { AuthProvider } from "./contexts"
 import { ProtectedRoute } from "./components"
 
+import "primereact/resources/themes/md-light-deeppurple/theme.css";  //theme
+import "primereact/resources/primereact.min.css";                  //core css
+import "primeicons/primeicons.css";    
+
 /**
  * Componente de la aplicación principal. Cuenta en su interior con todas las rutas de la aplicación.
  * @member

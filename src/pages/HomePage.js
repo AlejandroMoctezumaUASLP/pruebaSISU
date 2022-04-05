@@ -6,9 +6,7 @@ import { useAuth } from '../contexts/authContext'
 import styles from "./PagesStyle.module.css";
 
 // Importaciones Prime React
-import "primereact/resources/themes/rhea/theme.css";  //theme
-import "primereact/resources/primereact.min.css";                  //core css
-import "primeicons/primeicons.css";    
+import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { Dropdown } from 'primereact/dropdown';
 
@@ -20,7 +18,7 @@ import { Dropdown } from 'primereact/dropdown';
  *  <li> Contexto de Autenticación
  *  <li> Estados de Página
  *  <li> Funciones de la Página
- *  <li> Hooks (Carga Inicial, Recarga, Contexto regresó algo)
+ *  <li> Hooks (Carga Inicial)
  *  <li> Partes del componente
  *  <li> Componente
  * </ul>
@@ -39,8 +37,8 @@ export const HomePage = () => {
     const sortOptions = [
         {label: 'Alfabeticamente', value: 'nombre'},
         {label: 'Alfabeticamente (Inverso)', value: '!nombre'},
-        {label: 'Mayor a Menor', value: 'edad'},
-        {label: 'Menor a Mayor', value: '!edad'},
+        {label: 'Menor a Mayor', value: 'edad'},
+        {label: 'Mayor a Menor', value: '!edad'},
     ];
 
     // FUNCIONES DE LA PÁGINA
@@ -141,10 +139,19 @@ export const HomePage = () => {
     const renderHeader = () => {
       return (
           <div className="grid grid-nogutter">
-              <div className="col-6" style={{textAlign: 'left'}}>
-                  <Dropdown options={sortOptions} value={sortKey} optionLabel="label" placeholder="Sort By Price" onChange={onSortChange}/>
+              <div className="col-4" style={{textAlign: 'left'}}>
+                  <Dropdown 
+                    options={sortOptions} 
+                    value={sortKey} 
+                    optionLabel="label" 
+                    placeholder="Sort By Price" 
+                    onChange={onSortChange}
+                  />
               </div>
-              <div className="col-6" style={{textAlign: 'right'}}>
+              <div className="col-4" style={{textAlign: 'right'}}>
+                  <Button label="Logout" onClick={handleLogout} />
+              </div>
+              <div className="col-4" style={{textAlign: 'right'}}>
                   <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
               </div>
           </div>
