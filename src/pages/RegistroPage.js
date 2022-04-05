@@ -1,5 +1,5 @@
 // React
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 import { DropdownForm, SubmitButton } from "../components";
 import { useAuth } from "../contexts"
@@ -20,9 +20,6 @@ import styles from "./PagesStyle.module.css";
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-
-import FormHelperText from "@mui/material/FormHelperText";
-import { TextField } from "@mui/material";
 
 /**
  * Página de registro de nuevos usuarios.
@@ -78,9 +75,8 @@ export const RegistroPage = () => {
   const navigate = useNavigate();
 
   // FUNCIONES DE LA PÁGINA
-
   // Formulario para crear usuario. Al terminar, se recarga la página
-  const submitForm = (e) => {
+  const submitForm = useCallback((e) => {
     e.preventDefault();
 
     // Se guardan los valores de las verificaciones del formulario
@@ -96,42 +92,42 @@ export const RegistroPage = () => {
     // SE HACE LA VALIDACIÓN DEL FORMULARIO
     // Validación de País
     if (!paisVerificado){
-        setErrorPais(true);
-        setErrorPaisMensaje("Falta seleccionar País!");
+      setErrorPais(true);
+      setErrorPaisMensaje("Falta seleccionar País!");
     }
     else{
-        setErrorPais(false);
-        setErrorPaisMensaje("");
+      setErrorPais(false);
+      setErrorPaisMensaje("");
     }
 
     // Validación de Estado
     if (!estadoVerificado){
-        setErrorEstado(true);
-        setErrorEstadoMensaje("Falta seleccionar Estado!");
+      setErrorEstado(true);
+      setErrorEstadoMensaje("Falta seleccionar Estado!");
     }
     else{
-        setErrorEstado(false);
-        setErrorEstadoMensaje("");
+      setErrorEstado(false);
+      setErrorEstadoMensaje("");
     }
 
     // Validación de Ciudad
     if (!ciudadVerificada){
-        setErrorCiudad(true);
-        setErrorCiudadMensaje("Falta seleccionar Ciudad!");
+      setErrorCiudad(true);
+      setErrorCiudadMensaje("Falta seleccionar Ciudad!");
     }
     else{
-        setErrorCiudad(false);
-        setErrorCiudadMensaje("");
+      setErrorCiudad(false);
+      setErrorCiudadMensaje("");
     }
 
     // Validación de Edad
     if (!edadVerificada){
-        setErrorEdad(true);
-        setErrorEdadMensaje("Edad no válida!");
+      setErrorEdad(true);
+      setErrorEdadMensaje("Edad no válida!");
     }
     else{
-        setErrorEdad(false);
-        setErrorEdadMensaje("");
+      setErrorEdad(false);
+      setErrorEdadMensaje("");
     }
 
     // Validación de Email
@@ -180,7 +176,7 @@ export const RegistroPage = () => {
       emailVerificado && passwordVerificado && nombreVerificado === "Válido" && imagenVerificada){
       setSubmitting(true);
     }
-  };
+  },[pais,estado,ciudad,edad,email,password,nombre,profile]);
 
   // Cuando se carga por primera vez la página, se carga una lista de paises
   useEffect(() => {
@@ -311,6 +307,7 @@ export const RegistroPage = () => {
             onChange={(event) => {
               setNombre(event.target.value);
             }}
+            className={errorNombre && "p-invalid"}
           />
           <label htmlFor="nombre">Nombre</label>
         </span>
@@ -323,6 +320,7 @@ export const RegistroPage = () => {
             onChange={(event) => {
               setEmail(event.target.value);
             }}
+            className={errorEmail && "p-invalid"}
           />
           <label htmlFor="email">Email</label>
         </span>
@@ -336,6 +334,7 @@ export const RegistroPage = () => {
               setPassword(event.target.value);
             }}
             feedback={false}
+            className={errorPassword && "p-invalid"}
           />
           <label htmlFor="password">Password</label>
         </span>
@@ -348,8 +347,13 @@ export const RegistroPage = () => {
             onValueChange={(event) => {
               setEdad(event.target.value)
             }} 
-            mode="decimal" 
-            useGrouping={false} 
+            mode="decimal"
+            showButtons 
+            buttonLayout="horizontal"
+            min="18"
+            max="99" 
+            useGrouping={false}
+            className={errorEdad && "p-invalid"} 
           />
           <label htmlFor="edad">Edad</label>
         </span>
@@ -406,9 +410,9 @@ export const RegistroPage = () => {
             setProfile(target.files[0]);
           }}
         />
+        {errorProfile && <small className="p-error">{errorProfileMensaje}</small>}
         
         {/* Acciones de la página */}
-        <FormHelperText sx={{ paddingBottom: "10px", m: 1 }}>{errorProfileMensaje}</FormHelperText>
         <SubmitButton onClick={ submitForm } label="Enviar" />
         <p className={`${styles.camposDatosUsuario}`}>¿Ya tienes una cuenta?
         <Link to="/login"> Login</Link></p>

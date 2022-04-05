@@ -1,5 +1,5 @@
 // React
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 import { SubmitButton } from "../components";
 import { useAuth } from "../contexts"
@@ -49,7 +49,7 @@ export const LoginPage = () => {
 
   // FUNCIONES DE LA PÁGINA
   // Formulario para crear usuario. Al terminar, se recarga la página
-  const submitForm = (e) => {
+  const submitForm = useCallback((e) => {
     e.preventDefault();
 
     // Se guardan los valores de las verificaciones del formulario
@@ -82,7 +82,7 @@ export const LoginPage = () => {
     if (emailVerificado && passwordVerificado){
       setSubmitting(true);
     }
-  };
+  },[email,password]);
 
   // HOOKS
   // Con los datos del usuario, se crea un usuario en la BD local como también
@@ -122,6 +122,7 @@ export const LoginPage = () => {
             onChange={(event) => {
               setEmail(event.target.value);
             }}
+            className={errorEmail && "p-invalid"}
           />
           <label htmlFor="email">Email</label>
         </span>
@@ -135,6 +136,7 @@ export const LoginPage = () => {
               setPassword(event.target.value);
             }}
             feedback={false}
+            className={errorPassword && "p-invalid"}
           />
           <label htmlFor="password">Password</label>
         </span>

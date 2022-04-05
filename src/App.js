@@ -11,7 +11,7 @@ import "primeicons/primeicons.css";
  * Componente de la aplicación principal. Cuenta en su interior con todas las rutas de la aplicación.
  * @member
  */
-function App() {
+const App = () => {
   return (
     <div>
       <AuthProvider>

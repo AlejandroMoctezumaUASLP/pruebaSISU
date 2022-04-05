@@ -33,6 +33,7 @@ export function DropdownForm(props) {
             optionValue="_id"
             onChange={onChange} 
             value={value} 
+            className={errorState && "p-invalid"}
           />
           <label htmlFor={`dropdown-${label}`}>{label}</label>
       </span>

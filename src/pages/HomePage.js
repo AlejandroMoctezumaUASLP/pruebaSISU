@@ -95,7 +95,7 @@ export const HomePage = () => {
                   <div className={`${styles.productListDetail}`}>
                       <div className={`${styles.productName}`}>{data.nombre}</div>
                       <div className={`${styles.productDescription}`}>Edad: {data.edad}</div>
-                      <i className={`pi pi-tag ${styles.productCategoryIcon}`}></i><span className={`${styles.productCategory}`}>{data.ciudad.nombre}</span>
+                      <i className={`pi pi-map-marker ${styles.productCategoryIcon}`}></i><span className={`${styles.productCategory}`}>{data.ciudad.nombre}</span>
                   </div>
               </div>
           </div>
@@ -109,7 +109,7 @@ export const HomePage = () => {
               <div className={`${styles.productGridItem} card`}>
                   <div className={`${styles.productGridItemTop}`}>
                       <div>
-                          <i className={`pi pi-tag ${styles.productCategoryIcon}`}></i>
+                          <i className={`pi pi-map-marker ${styles.productCategoryIcon}`}></i>
                           <span className={`${styles.productCategory}`}>{data.ciudad.nombre}</span>
                       </div>
                   </div>
@@ -144,7 +144,7 @@ export const HomePage = () => {
                     options={sortOptions} 
                     value={sortKey} 
                     optionLabel="label" 
-                    placeholder="Sort By Price" 
+                    placeholder="Sort Users" 
                     onChange={onSortChange}
                   />
               </div>
