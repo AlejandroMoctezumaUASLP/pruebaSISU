@@ -32,3 +32,125 @@
   font-family: Arial, Helvetica, sans-serif;
   text-align: left;
 }
+
+.dataviewDemo .pDropdown {
+  width: 14rem;
+  font-weight: normal;
+}
+
+.dataviewDemo .productName {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dataviewDemo .productDescription {
+  margin: 0 0 1rem 0;
+}
+
+.dataviewDemo .productCategoryIcon {
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+.dataviewDemo .productCategory {
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.dataviewDemo .productListItem {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  width: 100%;
+}
+
+.dataviewDemo .productListItem img {
+  width: 150px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  margin-right: 2rem;
+}
+
+.dataviewDemo .productListItem .productListDetail {
+  flex: 1 1 0;
+}
+
+.dataviewDemo .productListItem .pRating {
+  margin: 0 0 0.5rem 0;
+}
+
+.dataviewDemo .productListItem .productPrice {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  align-self: flex-end;
+}
+
+.dataviewDemo .productListItem .productListAction {
+  display: flex;
+  flex-direction: column;
+}
+
+.dataviewDemo .productListItem .pButton {
+  margin-bottom: 0.5rem;
+}
+
+.dataviewDemo .productGridItem {
+  margin: 0.5em;
+  border: 1px solid var(--surface-border);
+  padding: 2rem;
+}
+
+.dataviewDemo .productGridItem .productGridItemTop,
+.dataviewDemo .productGridItem .productGridItemBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dataviewDemo .productGridItem img {
+  width: 75%;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  margin: 2rem 0;
+}
+
+.dataviewDemo .productGridItem .productGridItemContent {
+  text-align: center;
+}
+
+.dataviewDemo .productGridItem .productPrice {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 576px) {
+  .dataviewDemo .productListItem {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dataviewDemo .productListItem img {
+    width: 75%;
+    margin: 2rem 0;
+  }
+
+  .dataviewDemo .productListItem .productListDetail {
+    text-align: center;
+  }
+
+  .dataviewDemo .productListItem .productPrice {
+    align-self: center;
+  }
+
+  .dataviewDemo .productListItem .productListAction {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dataviewDemo .productListItem .productListAction {
+    margin-top: 2rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+}
