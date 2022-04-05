@@ -24,7 +24,7 @@ export function DropdownForm(props) {
   const { options, label, value, onChange, errorState, errorText } = props;
 
   return (
-    <div style={{marginBottom: "30px"}}>
+    <div>
       <span className="p-float-label">
           <Dropdown 
             inputId={`dropdown-${label}`} 
@@ -33,7 +33,7 @@ export function DropdownForm(props) {
             optionValue="_id"
             onChange={onChange} 
             value={value} 
-            className={errorState && "p-invalid"}
+            className={`inputfield w-full ${errorState && "p-invalid"}`}
           />
           <label htmlFor={`dropdown-${label}`}>{label}</label>
       </span>

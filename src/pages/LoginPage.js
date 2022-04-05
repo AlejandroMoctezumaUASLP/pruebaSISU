@@ -109,42 +109,48 @@ export const LoginPage = () => {
 
   // COMPONENTE
   return (
-    <div className={`${styles.containerMain}`}>
-      <Toast ref={toastRef}/>
-      <div className={`${styles.pantallaRegistro}`}>
+    <div className="card grid pt-8">
+      <div className="col-3"></div>
+      <div className="col-6">
+        <Toast ref={toastRef}/>
         {/* Formulario de Registro */}
-        <h1 className={`${styles.tituloPantalla}`}>Login de Usuario</h1>
-        
-        <span className="p-float-label" style={{marginBottom: "30px"}}>
-          <InputText 
-            id="email" 
-            value={email} 
-            onChange={(event) => {
-              setEmail(event.target.value);
-            }}
-            className={errorEmail && "p-invalid"}
-          />
-          <label htmlFor="email">Email</label>
-        </span>
-        {errorEmail && <small className="p-error">{errorEmailMensaje}</small>}
-        
-        <span className="p-float-label">
-          <Password 
-            id="password" 
-            value={password} 
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-            feedback={false}
-            className={errorPassword && "p-invalid"}
-          />
-          <label htmlFor="password">Password</label>
-        </span>
-        {errorPassword && <small className="p-error">{errorPasswordMensaje}</small>}
+        <h1 className={`${styles.textoForma}`}>Login de Usuario</h1>
+
+        <div className="field">
+          <span className="p-float-label">
+            <InputText 
+              id="email" 
+              value={email} 
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
+              className={`inputfield w-full ${errorEmail && "p-invalid"}`}
+            />
+            <label htmlFor="email">Email</label>
+          </span>
+          {errorEmail && <small className="p-error">{errorEmailMensaje}</small>}
+        </div>
+          
+        <div className="field">
+          <span className="p-float-label">
+            <Password 
+              id="password" 
+              value={password} 
+              onChange={(event) => {
+                setPassword(event.target.value);
+              }}
+              feedback={false}
+              className={errorPassword && "p-invalid"}
+              inputClassName="inputfield w-full"
+            />
+            <label htmlFor="password">Password</label>
+          </span>
+          {errorPassword && <small className="p-error">{errorPasswordMensaje}</small>}
+        </div>
 
         {/* Acciones de la página */}
         <SubmitButton onClick={ submitForm } label="Enviar" />
-        <p className={`${styles.camposDatosUsuario}`}>¿Aún no tienes una cuenta?
+        <p className={`${styles.textoForma}`}>¿Aún no tienes una cuenta?
         <Link to="/register"> Registrate </Link></p>
       </div>
     </div>

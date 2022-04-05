@@ -1,34 +1,4 @@
-.camposDatosUsuario {
-  font-family: Arial, Helvetica, sans-serif;
-  margin-left: 5%;
-  padding-top: 2%;
-}
-
-.containerMain {
-  height: 100vh;
-  padding-left: 28%;
-  padding-top: 5%;
-}
-
-.datosUsuario {
-  background-color: #ff8a50;
-  height: 320px;
-  margin-bottom: 50px;
-  width: 390px;
-}
-
-.pantallaRegistro {
-  border-color: rgb(59, 59, 59);
-  border-radius: 10px;
-  border-style: solid;
-  padding-bottom: 3%;
-  padding-left: 10%;
-  padding-right: 10%;
-  padding-top: 3%;
-  width: 390px;
-}
-
-.tituloPantalla {
+.textoForma {
   font-family: Arial, Helvetica, sans-serif;
   text-align: left;
 }

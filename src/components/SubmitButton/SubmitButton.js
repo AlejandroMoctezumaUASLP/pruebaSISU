@@ -15,10 +15,6 @@ export const SubmitButton = (props) => {
 
   return (
     <Button
-      style={{
-        padding: "10px",
-        marginTop: "20px",
-      }}
       label={label}
       onClick={onClick} 
     />

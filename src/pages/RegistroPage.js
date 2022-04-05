@@ -295,126 +295,143 @@ export const RegistroPage = () => {
   },[submitting])
 
   return (
-    <div className={`${styles.containerMain}`}>
-      <div className={`${styles.pantallaRegistro}`}>
+    <div className="card grid pt-8">
+      <div className="col-3"></div>
+      <div className="col-6">
         {/* Formulario de Registro */}
-        <h1 className={`${styles.tituloPantalla}`}>Registro de Usuario</h1>
+        <h1 className={`${styles.textoForma}`}>Registro de Usuario</h1>
 
-        <span className="p-float-label" style={{marginBottom: "30px"}}>
-          <InputText 
-            id="nombre" 
-            value={nombre} 
-            onChange={(event) => {
-              setNombre(event.target.value);
-            }}
-            className={errorNombre && "p-invalid"}
-          />
-          <label htmlFor="nombre">Nombre</label>
-        </span>
-        {errorNombre && <small className="p-error">{errorNombreMensaje}</small>}
+        <div className="field">
+          <span className="p-float-label">
+            <InputText 
+              id="nombre" 
+              value={nombre} 
+              onChange={(event) => {
+                setNombre(event.target.value);
+              }}
+              className={`inputfield w-full ${errorNombre && "p-invalid"}`}
+            />
+            <label htmlFor="nombre">Nombre</label>
+          </span>
+          {errorNombre && <small className="p-error">{errorNombreMensaje}</small>}
+        </div>
         
-        <span className="p-float-label" style={{marginBottom: "30px"}}>
-          <InputText 
-            id="email" 
-            value={email} 
-            onChange={(event) => {
-              setEmail(event.target.value);
-            }}
-            className={errorEmail && "p-invalid"}
-          />
-          <label htmlFor="email">Email</label>
-        </span>
-        {errorEmail && <small className="p-error">{errorEmailMensaje}</small>}
+        <div className="field">
+          <span className="p-float-label">
+            <InputText 
+              id="email" 
+              value={email} 
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
+              className={`inputfield w-full ${errorEmail && "p-invalid"}`}
+            />
+            <label htmlFor="email">Email</label>
+          </span>
+          {errorEmail && <small className="p-error">{errorEmailMensaje}</small>}
+        </div>
 
-        <span className="p-float-label" style={{marginBottom: "30px"}}>
-          <Password 
-            id="password" 
-            value={password} 
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-            feedback={false}
-            className={errorPassword && "p-invalid"}
-          />
-          <label htmlFor="password">Password</label>
-        </span>
-        {errorPassword && <small className="p-error">{errorPasswordMensaje}</small>}
+        <div className="field">
+          <span className="p-float-label">
+            <Password 
+              id="password" 
+              value={password} 
+              onChange={(event) => {
+                setPassword(event.target.value);
+              }}
+              className={errorPassword && "p-invalid"}
+              inputClassName="inputfield w-full"
+            />
+            <label htmlFor="password">Password</label>
+          </span>
+          {errorPassword && <small className="p-error">{errorPasswordMensaje}</small>}
+        </div>
 
-        <span className="p-float-label" style={{marginBottom: "30px"}}>
-          <InputNumber 
-            inputId="edad" 
-            value={edad} 
-            onValueChange={(event) => {
-              setEdad(event.target.value)
-            }} 
-            mode="decimal"
-            showButtons 
-            buttonLayout="horizontal"
-            min="18"
-            max="99" 
-            useGrouping={false}
-            className={errorEdad && "p-invalid"} 
+        <div className="field">
+          <span className="p-float-label">
+            <InputNumber 
+              inputId="edad" 
+              value={edad} 
+              onValueChange={(event) => {
+                setEdad(event.target.value)
+              }} 
+              mode="decimal"
+              showButtons 
+              buttonLayout="horizontal"
+              min="18"
+              max="99" 
+              useGrouping={false}
+              className={`inputfield w-full ${errorEdad && "p-invalid"}`}
+            />
+            <label htmlFor="edad">Edad</label>
+          </span>
+          {errorEdad && <small className="p-error">{errorEdadMensaje}</small>}
+        </div>
+        
+        <div className="field">
+          <DropdownForm
+            label="Pais"
+            options={listaPaises}
+            value={pais}
+            onChange={(event) => {
+              const {
+                target: { value },
+              } = event;
+              setPais(value);
+            }}
+            errorState={errorPais}
+            errorText={errorPaisMensaje}
           />
-          <label htmlFor="edad">Edad</label>
-        </span>
-        {errorEdad && <small className="p-error">{errorEdadMensaje}</small>}
+        </div>
         
-        <DropdownForm
-          label="Pais"
-          options={listaPaises}
-          value={pais}
-          onChange={(event) => {
-            const {
-              target: { value },
-            } = event;
-            setPais(value);
-          }}
-          errorState={errorPais}
-          errorText={errorPaisMensaje}
-        />
+        <div className="field">
+          <DropdownForm
+            label="Estado"
+            options={listaEstados}
+            value={estado}
+            onChange={(event) => {
+              const {
+                target: { value },
+              } = event;
+              setEstado(value);
+            }}
+            errorState={errorEstado}
+            errorText={errorEstadoMensaje}
+          />
+        </div>
         
-        <DropdownForm
-          label="Estado"
-          options={listaEstados}
-          value={estado}
-          onChange={(event) => {
-            const {
-              target: { value },
-            } = event;
-            setEstado(value);
-          }}
-          errorState={errorEstado}
-          errorText={errorEstadoMensaje}
-        />
+        <div className="field">
+          <DropdownForm
+            label="Ciudad"
+            options={listaCiudades}
+            value={ciudad}
+            onChange={(event) => {
+              const {
+                target: { value },
+              } = event;
+              setCiudad(value);
+            }}
+            errorState={errorCiudad}
+            errorText={errorCiudadMensaje}
+          />
+        </div>
         
-        <DropdownForm
-          label="Ciudad"
-          options={listaCiudades}
-          value={ciudad}
-          onChange={(event) => {
-            const {
-              target: { value },
-            } = event;
-            setCiudad(value);
-          }}
-          errorState={errorCiudad}
-          errorText={errorCiudadMensaje}
-        />
-        
-        <input
-          accept="image/*"
-          id="faceImage"
-          type="file"
-          className={{display: "block"}}
-          onChange={({ target }) => {
-            setProfile(target.files[0]);
-          }}
-        />
-        {errorProfile && <small className="p-error">{errorProfileMensaje}</small>}
+        <div className="field">
+          <input
+            accept="image/*"
+            id="faceImage"
+            type="file"
+            className={{display: "block"}}
+            onChange={({ target }) => {
+              setProfile(target.files[0]);
+            }}
+          />
+          {errorProfile && <small className="p-error">{errorProfileMensaje}</small>}
+        </div>
         
         {/* Acciones de la página */}
         <SubmitButton onClick={ submitForm } label="Enviar" />
-        <p className={`${styles.camposDatosUsuario}`}>¿Ya tienes una cuenta?
+        <p className={`${styles.textoForma}`}>¿Ya tienes una cuenta?
         <Link to="/login"> Login</Link></p>
       </div>
     </div>

@@ -148,7 +148,7 @@ export const HomePage = () => {
                     onChange={onSortChange}
                   />
               </div>
-              <div className="col-4" style={{textAlign: 'right'}}>
+              <div className="col-4" style={{textAlign: 'center'}}>
                   <Button label="Logout" onClick={handleLogout} />
               </div>
               <div className="col-4" style={{textAlign: 'right'}}>
@@ -165,7 +165,7 @@ export const HomePage = () => {
         <div className={`${styles.dataviewDemo}`}>
           <div className="card">
               <DataView value={listaUsuarios} layout={layout} header={header}
-                      itemTemplate={itemTemplate} paginator rows={3}
+                      itemTemplate={itemTemplate} paginator rows={6}
                       sortOrder={sortOrder} sortField={sortField} />
           </div>
         </div>
