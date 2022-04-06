@@ -18,7 +18,7 @@
       };
   
       const res = await fetch(
-        "https://sisu-prueba-correccion.herokuapp.com/servicio/usuarios",
+        "http://localhost:8000/servicio/usuarios",
         requestOptions
       );
   
