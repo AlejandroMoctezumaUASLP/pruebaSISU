@@ -187,7 +187,7 @@ export const RegistroPage = () => {
       };
 
       fetch(
-        "http://localhost:8000/servicio/paises",
+        "https://sisu-prueba-correccion.herokuapp.com/servicio/paises",
         requestOptions
       )
         .then((response) => response.json())
@@ -207,7 +207,7 @@ export const RegistroPage = () => {
       };
 
       fetch(
-        `http://localhost:8000/servicio/estados/${pais}`,
+        `https://sisu-prueba-correccion.herokuapp.com/servicio/estados/${pais}`,
         requestOptions
       )
         .then((response) => response.json())
@@ -237,7 +237,7 @@ export const RegistroPage = () => {
       };
 
       fetch(
-        `http://localhost:8000/servicio/ciudades/${estado}`,
+        `https://sisu-prueba-correccion.herokuapp.com/servicio/ciudades/${estado}`,
         requestOptions
       )
         .then((response) => response.json())

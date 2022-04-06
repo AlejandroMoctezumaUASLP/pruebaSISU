@@ -77,7 +77,7 @@ export const HomePage = () => {
         };
     
         fetch(
-          "http://localhost:8000/servicio/usuarios",
+          "https://sisu-prueba-correccion.herokuapp.com/servicio/usuarios",
           requestOptions
         )
           .then((response) => response.json())
