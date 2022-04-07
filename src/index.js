@@ -1,10 +1,14 @@
 import React from 'react';
+// USAR CON REACT 17
 import ReactDOM from 'react-dom';
+// USAR SOLO CUANDO SE ACTUALICÉ A REACT 18
+// import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from "react-router-dom";
 
+// USAR CON REACT 17
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>

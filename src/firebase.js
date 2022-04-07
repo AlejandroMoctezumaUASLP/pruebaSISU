@@ -1,14 +1,15 @@
+/**
+ * Documento de conexión del backend a Firebase. Especificamente, se hace la conexión
+ * con Auth (Para autenticación de usuarios) y Storage (Para guardar imagenes y otros
+ * recursos públicos de la aplicación).
+ * 
+ * @member
+ */
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-
-/**
- * Se encarga de hacer la conexión inicial a firebase y a todas las dependencias
- * implementadas en este proyecto.
- * 
- * @member
- */
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries

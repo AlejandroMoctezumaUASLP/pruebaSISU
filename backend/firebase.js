@@ -1,3 +1,10 @@
+/*******************
+ * Documento de conexión del backend a Firebase. Especificamente, se hace la conexión
+ * con Firestore (Para el almacenamiento de las colecciones).
+ * 
+ * @author Alejandro Moctezuma Luna
+ */
+
 // Import the functions you need from the SDKs you need
 const { initializeApp } = require("firebase/app");
 const { getFirestore } = require("firebase/firestore");
