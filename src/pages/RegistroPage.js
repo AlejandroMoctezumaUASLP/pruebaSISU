@@ -3,15 +3,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 import { DropdownForm, SubmitButton } from "../components";
 import { useAuth } from "../contexts"
-import { 
-  verificarEdad, 
-  verificarId, 
-  verificarNombre, 
-  verificarEmail, 
-  verificarPassword,
-  verificarNoNull 
-} from '../funciones';
-import { CrudRegistro, subirImagen, descargarImagen } from "../utils";
+import { verificarNombre } from '../funciones';
+import { CrudRegistro, subirImagen } from "../utils";
 
 // Modulo CSS
 import styles from "./PagesStyle.module.css";
@@ -21,15 +14,18 @@ import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 
+// Importaciones Formik
+import { useFormik } from "formik";
+
 /**
  * Página de registro de nuevos usuarios.
  * 
  * El código se estructura de la sig. forma:
  * <ul style="list-style: none;">
  *  <li> Estados de Página
- *  <li> Estados de Formulario
- *  <li> Funciones de la Página
- *  <li> UseEffects (Carga Inicial, Recarga, Contexto regresó algo)
+ *  <li> Contexto de Autenticación y Navegador
+ *  <li> Funciones (Cambio de Input)
+ *  <li> Hooks (Formik, Carga de Países, Estados y Ciudad, Cambio de valor para edad e imagen)
  *  <li> Componente
  * </ul>
  * @member
@@ -39,144 +35,109 @@ export const RegistroPage = () => {
   const [listaPaises, setListaPaises] = useState([]);
   const [listaEstados, setListaEstados] = useState([]);
   const [listaCiudades, setListaCiudades] = useState([]);
-  const [submitting, setSubmitting] = useState(false);
 
-  // ESTADOS DE FORMULARIO
-  // Datos de Formulario
-  const [pais, setPais] = useState("");
-  const [estado, setEstado] = useState("");
-  const [ciudad, setCiudad] = useState("");
-  const [nombre, setNombre] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [edad, setEdad] = useState(18);
-  const [profile, setProfile] = useState(null)
-
-  // Validación de formulario
-  const [errorPais, setErrorPais] = useState(false);
-  const [errorPaisMensaje, setErrorPaisMensaje] = useState("");
-  const [errorEstado, setErrorEstado] = useState(false);
-  const [errorEstadoMensaje, setErrorEstadoMensaje] = useState("");
-  const [errorCiudad, setErrorCiudad] = useState(false);
-  const [errorCiudadMensaje, setErrorCiudadMensaje] = useState("");
-  const [errorNombre, setErrorNombre] = useState(false);
-  const [errorNombreMensaje, setErrorNombreMensaje] = useState("");
-  const [errorEmail, setErrorEmail] = useState(false);
-  const [errorEmailMensaje, setErrorEmailMensaje] = useState("");
-  const [errorPassword, setErrorPassword] = useState(false);
-  const [errorPasswordMensaje, seterrorPasswordMensaje] = useState("");
-  const [errorEdad, setErrorEdad] = useState(false);
-  const [errorEdadMensaje, setErrorEdadMensaje] = useState("");
-  const [errorProfile, setErrorProfile] = useState(false);
-  const [errorProfileMensaje, setErrorProfileMensaje] = useState("");
-
-  // Contextos y Navegador
+  // CONTEXTO DE AUTENTICACIÓN Y NAVEGADOR
   const {signUp} = useAuth();
   const navigate = useNavigate();
 
-  // FUNCIONES DE LA PÁGINA
-  // Formulario para crear usuario. Al terminar, se recarga la página
-  const submitForm = useCallback((e) => {
-    e.preventDefault();
+  // FUNCIONES
+  // Cambia el estado del Input manualmente (Se usa con la edad y la imagen de perfil)
+  const onInputChange = (name, value) => {
+    formik.setFieldValue(name,value,false);
+  };
 
-    // Se guardan los valores de las verificaciones del formulario
-    const paisVerificado = verificarId(pais);
-    const estadoVerificado = verificarId(estado);
-    const ciudadVerificada = verificarId(ciudad);
-    const edadVerificada = verificarEdad(edad);
-    const emailVerificado = verificarEmail(email);
-    const passwordVerificado = verificarPassword(password);
-    const nombreVerificado = verificarNombre(nombre);
-    const imagenVerificada = verificarNoNull(profile);
+  // HOOKS
+  // Hooks de Formik. Se definen los valores del formulario, la función validadora y
+  // la función para logear al Usuario
+  const formik = useFormik({
+    initialValues: {
+      pais: "",
+      estado: "",
+      ciudad: "",
+      nombre: "",
+      email: "",
+      password: "",
+      edad: 18,
+      profile: null
+    },
+    validate: (valores) => {
+      let errores = {};
 
-    // SE HACE LA VALIDACIÓN DEL FORMULARIO
-    // Validación de País
-    if (!paisVerificado){
-      setErrorPais(true);
-      setErrorPaisMensaje("Falta seleccionar País!");
-    }
-    else{
-      setErrorPais(false);
-      setErrorPaisMensaje("");
-    }
+      // Validación de pais
+      if(!valores.pais){
+        errores.pais = "Por favor ingresa un pais";
+      }
 
-    // Validación de Estado
-    if (!estadoVerificado){
-      setErrorEstado(true);
-      setErrorEstadoMensaje("Falta seleccionar Estado!");
-    }
-    else{
-      setErrorEstado(false);
-      setErrorEstadoMensaje("");
-    }
+      // Validación de estado
+      if(!valores.estado){
+        errores.estado = "Por favor ingresa un estado";
+      }
 
-    // Validación de Ciudad
-    if (!ciudadVerificada){
-      setErrorCiudad(true);
-      setErrorCiudadMensaje("Falta seleccionar Ciudad!");
-    }
-    else{
-      setErrorCiudad(false);
-      setErrorCiudadMensaje("");
-    }
+      // Validación de ciudad
+      if(!valores.ciudad){
+        errores.ciudad = "Por favor ingresa una ciudad";
+      }
 
-    // Validación de Edad
-    if (!edadVerificada){
-      setErrorEdad(true);
-      setErrorEdadMensaje("Edad no válida!");
-    }
-    else{
-      setErrorEdad(false);
-      setErrorEdadMensaje("");
-    }
+      // Validación de nombre
+      if(!valores.nombre){
+        errores.nombre = "Por favor ingresa un nombre";
+      } else if ( verificarNombre(valores.nombre) != "Válido" ){
+        errores.nombre = "Nombre no válido";
+      }
 
-    // Validación de Email
-    if (!emailVerificado){
-      setErrorEmail(true);
-      setErrorEmailMensaje("Email no válido!");
-    }
-    else{
-      setErrorEmail(false);
-      setErrorEmailMensaje("");
-    }
+      // Validación de email
+      if(!valores.email){
+        errores.email = "Por favor ingresa un email";
+      } else if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(valores.email)){
+        errores.email = "Email no válido";
+      }
 
-    // Validación de Password
-    if (!passwordVerificado){
-      setErrorPassword(true);
-      seterrorPasswordMensaje("Password de mínimo 6 caractéres!");
-    }
-    else{
-      setErrorPassword(false);
-      seterrorPasswordMensaje("");
-    }
+      // Validación de password
+      if(!valores.password){
+        errores.password = "Por favor ingresa un password";
+      } else if (valores.password.length < 6){
+        errores.password = "La contraseña debe de ser de 6 caracteres de largo";
+      }
 
-    // Validación de Nombre
-    if (nombreVerificado === "Válido"){
-      setErrorNombre(false);
-      setErrorNombreMensaje("");
-    }
-    else{
-      setErrorNombre(true);
-      setErrorNombreMensaje(nombreVerificado);
-    }
+      // Validación de edad
+      if(!valores.edad){
+        errores.edad = "Por favor ingresa tu edad";
+      }else if (valores.edad < 18 || valores.edad > 99){
+        errores.edad = "Edad no válida";
+      }
 
-    // Validar Imagen
-    if (!imagenVerificada){
-      setErrorProfile(true);
-      setErrorProfileMensaje("No hay imagen!");
-    }
-    else{
-      setErrorProfile(false);
-      setErrorProfileMensaje("");
-    }
+      // Validación de imagen de perfil
+      if(!valores.profile){
+        errores.profile = "Por favor agrega una imagen de perfil";
+      }
 
-    // Si todas las verificaciones pasaron, se inicia el proceso de crear un usuario
-    // y logearlo en el sistema.
-    if (paisVerificado && estadoVerificado && ciudadVerificada && edadVerificada && 
-      emailVerificado && passwordVerificado && nombreVerificado === "Válido" && imagenVerificada){
-      setSubmitting(true);
+      return errores;
+    },
+    onSubmit: async (valores) => {
+      // Se crea la imagen de perfil y se agrega la URL a un nuevo objeto de usuario
+      let res = "";
+      const urlImagen = await subirImagen(valores.profile);
+      const body = {
+        ciudad: valores.ciudad,
+        nombre: valores.nombre,
+        edad: valores.edad,
+        urlImagen
+      }
+
+      // Se crea el usuario en la BD local
+      res = await CrudRegistro.createUsuario(JSON.stringify(body));
+
+      // // Se crea el usuario en Firebase Auth y se logea
+      await signUp(valores.email, valores.password);
+
+      // Se limpian los valores del formulario
+      if (res !== "")
+      {
+        formik.resetForm();
+        navigate("/");
+      }
     }
-  },[pais,estado,ciudad,edad,email,password,nombre,profile]);
+  });
 
   // Cuando se carga por primera vez la página, se carga una lista de paises
   useEffect(() => {
@@ -187,7 +148,7 @@ export const RegistroPage = () => {
       };
 
       fetch(
-        "hhttp://localhost:8000/servicio/paises",
+        "http://localhost:8000/servicio/paises",
         requestOptions
       )
         .then((response) => response.json())
@@ -207,7 +168,7 @@ export const RegistroPage = () => {
       };
 
       fetch(
-        `http://localhost:8000/servicio/estados/${pais}`,
+        `http://localhost:8000/servicio/estados/${formik.values.pais}`,
         requestOptions
       )
         .then((response) => response.json())
@@ -216,17 +177,21 @@ export const RegistroPage = () => {
     }
 
     // Se limpian los valores seleccionados
-    setEstado("");
-    setCiudad("");
+    // setEstado("");
+    // setCiudad("");
+    formik.setFieldValue("estado","",false);
+    formik.setFieldTouched("estado",false,false);
+    formik.setFieldValue("ciudad","",false);
+    formik.setFieldTouched("ciudad",false,false);
 
     // Se limpian los dropdowns
     setListaEstados([]);
     setListaCiudades([]);
     
     // Si se selecciona un país, se actualiza el dropdown de los estados
-    if (pais !== "")
+    if (formik.values.pais !== "")
         obtenerEstados();
-  }, [pais]);
+  }, [formik.values.pais]);
 
   // Cuando se cambia el estado, se carga una nueva lista de ciudades
   useEffect(() => {
@@ -237,7 +202,7 @@ export const RegistroPage = () => {
       };
 
       fetch(
-        `http://localhost:8000/servicio/ciudades/${estado}`,
+        `http://localhost:8000/servicio/ciudades/${formik.values.estado}`,
         requestOptions
       )
         .then((response) => response.json())
@@ -246,53 +211,16 @@ export const RegistroPage = () => {
     }
 
     // Se limpia el valor seleccionado
-    setCiudad("");
+    formik.setFieldValue("ciudad","",false);
+    formik.setFieldTouched("ciudad",false,false);
 
     // Se limpia el dropdown
     setListaCiudades([]);
 
     // Si se selecciona un estado, se actualiza el dropdown de ciudades
-    if (estado !== "")
+    if (formik.values.estado !== "")
         obtenerCiudades();
-  }, [estado]);
-
-  // Con los datos del usuario, se crea un usuario en la BD local como también
-  // en Firebase Auth
-  useEffect(() => {
-    async function registrarUsuario() {
-      let body = { ciudad, nombre, edad };
-      const userData = { email, password };
-      let res = " ";
-
-      // Se crea la imagen de perfil y se agrega la URL al body
-      const urlImagen = await subirImagen(profile);
-      body = {...body, urlImagen}
-
-      // Se crea el usuario en la BD local
-      res = await CrudRegistro.createUsuario(JSON.stringify(body));
-
-      // // Se crea el usuario en Firebase Auth y se logea
-      await signUp(userData.email, userData.password);
-
-      // Se limpian los valores del formulario
-      if (res !== "")
-      {
-        setPais("");
-        setEstado("");
-        setCiudad("");
-        setNombre("");
-        setEdad(18);
-        setEmail("");
-        setPassword("");
-        
-        setSubmitting(false);
-        navigate("/");
-      }
-    }
-
-    if(submitting)
-      registrarUsuario();
-  },[submitting])
+  }, [formik.values.estado]);
 
   return (
     <div className="card grid pt-8">
@@ -305,114 +233,102 @@ export const RegistroPage = () => {
           <span className="p-float-label">
             <InputText 
               id="nombre" 
-              value={nombre} 
-              onChange={(event) => {
-                setNombre(event.target.value);
-              }}
-              className={`inputfield w-full ${errorNombre && "p-invalid"}`}
+              name="nombre"
+              value={formik.values.nombre} 
+              onChange={formik.handleChange}
+              className={`inputfield w-full ${formik.touched.nombre && formik.errors.nombre && "p-invalid"}`}
             />
             <label htmlFor="nombre">Nombre</label>
           </span>
-          {errorNombre && <small className="p-error">{errorNombreMensaje}</small>}
+          {formik.touched.nombre && formik.errors.nombre && <small className="p-error">{formik.errors.nombre}</small>}
         </div>
         
         <div className="field">
           <span className="p-float-label">
             <InputText 
-              id="email" 
-              value={email} 
-              onChange={(event) => {
-                setEmail(event.target.value);
-              }}
-              className={`inputfield w-full ${errorEmail && "p-invalid"}`}
+              id="email"
+              name="email" 
+              value={formik.values.email} 
+              onChange={formik.handleChange}
+              className={`inputfield w-full ${formik.touched.email && formik.errors.email && "p-invalid"}`}
             />
             <label htmlFor="email">Email</label>
           </span>
-          {errorEmail && <small className="p-error">{errorEmailMensaje}</small>}
+          {formik.touched.email && formik.errors.email && <small className="p-error">{formik.errors.email}</small>}
         </div>
 
         <div className="field">
           <span className="p-float-label">
             <Password 
               id="password" 
-              value={password} 
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
-              className={errorPassword && "p-invalid"}
+              name="password"
+              value={formik.values.password} 
+              onChange={formik.handleChange}
+              className={formik.touched.password && formik.errors.password && "p-invalid"}
               inputClassName="inputfield w-full"
             />
             <label htmlFor="password">Password</label>
           </span>
-          {errorPassword && <small className="p-error">{errorPasswordMensaje}</small>}
+          {formik.touched.password && formik.errors.password &&  <small className="p-error">{formik.errors.password}</small>}
         </div>
 
         <div className="field">
           <span className="p-float-label">
             <InputNumber 
-              inputId="edad" 
-              value={edad} 
-              onValueChange={(event) => {
-                setEdad(event.target.value)
-              }} 
+              id="edad"
+              name="edad" 
+              value={formik.values.edad} 
+              onChange={({value}) => {
+                (value && value >= 18 && value <= 99) 
+                ? onInputChange("edad",value) 
+                : onInputChange("edad",18)
+              }}
               mode="decimal"
               showButtons 
               buttonLayout="horizontal"
               min="18"
               max="99" 
               useGrouping={false}
-              className={`inputfield w-full ${errorEdad && "p-invalid"}`}
+              className={`inputfield w-full ${formik.touched.edad && formik.errors.edad && "p-invalid"}`}
             />
             <label htmlFor="edad">Edad</label>
           </span>
-          {errorEdad && <small className="p-error">{errorEdadMensaje}</small>}
+          {formik.touched.edad && formik.errors.edad && <small className="p-error">{formik.errors.edad}</small>}
         </div>
         
         <div className="field">
           <DropdownForm
             label="Pais"
+            name="pais"
             options={listaPaises}
-            value={pais}
-            onChange={(event) => {
-              const {
-                target: { value },
-              } = event;
-              setPais(value);
-            }}
-            errorState={errorPais}
-            errorText={errorPaisMensaje}
+            value={formik.values.pais}
+            onChange={formik.handleChange}
+            error={formik.errors.pais}
+            touched={formik.touched.pais}
           />
         </div>
         
         <div className="field">
           <DropdownForm
             label="Estado"
+            name="estado"
             options={listaEstados}
-            value={estado}
-            onChange={(event) => {
-              const {
-                target: { value },
-              } = event;
-              setEstado(value);
-            }}
-            errorState={errorEstado}
-            errorText={errorEstadoMensaje}
+            value={formik.values.estado}
+            onChange={formik.handleChange}
+            error={formik.errors.estado}
+            touched={formik.touched.estado}
           />
         </div>
         
         <div className="field">
           <DropdownForm
             label="Ciudad"
+            name="ciudad"
             options={listaCiudades}
-            value={ciudad}
-            onChange={(event) => {
-              const {
-                target: { value },
-              } = event;
-              setCiudad(value);
-            }}
-            errorState={errorCiudad}
-            errorText={errorCiudadMensaje}
+            value={formik.values.ciudad}
+            onChange={formik.handleChange}
+            error={formik.errors.ciudad}
+            touched={formik.touched.ciudad}
           />
         </div>
         
@@ -420,17 +336,16 @@ export const RegistroPage = () => {
           <input
             accept="image/*"
             id="faceImage"
+            name="profile"
             type="file"
             className={{display: "block"}}
-            onChange={({ target }) => {
-              setProfile(target.files[0]);
-            }}
+            onChange={({target}) => onInputChange("profile",target.files[0])}
           />
-          {errorProfile && <small className="p-error">{errorProfileMensaje}</small>}
+          {formik.touched.profile && formik.errors.profile && <small className="p-error">{formik.errors.profile}</small>}
         </div>
         
         {/* Acciones de la página */}
-        <SubmitButton onClick={ submitForm } label="Enviar" />
+        <SubmitButton onClick={formik.handleSubmit} label="Enviar" />
         <p className={`${styles.textoForma}`}>¿Ya tienes una cuenta?
         <Link to="/login"> Login</Link></p>
       </div>

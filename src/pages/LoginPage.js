@@ -1,9 +1,8 @@
 // React
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useRef } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 import { SubmitButton } from "../components";
 import { useAuth } from "../contexts"
-import { verificarEmail, verificarPassword } from '../funciones';
 
 // Modulo CSS
 import styles from "./PagesStyle.module.css";
@@ -13,16 +12,16 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Toast } from "primereact/toast";
 
+// Importaciones Formik
+import { useFormik } from "formik";
+
 /**
  * Página de login de usuarios.
  * 
  * El código se estructura de la sig. forma:
  * <ul style="list-style: none;">
  *  <li> Contexto de Autenticación, Refs y Navegador
- *  <li> Estados de Página
- *  <li> Estados de Formulario
- *  <li> Funciones de la Página
- *  <li> Hooks (Inicio de sesión)
+ *  <li> Hooks (Formik)
  *  <li> Componente
  * </ul>
  * @member
@@ -33,79 +32,44 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const toastRef = useRef();
 
-  // ESTADOS DE PÁGINA
-  const [submitting, setSubmitting] = useState(false);
-
-  // ESTADOS DE FORMULARIO
-  // Datos de Formulario
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  // Validación de formulario
-  const [errorEmail, setErrorEmail] = useState(false);
-  const [errorEmailMensaje, setErrorEmailMensaje] = useState("");
-  const [errorPassword, setErrorPassword] = useState(false);
-  const [errorPasswordMensaje, seterrorPasswordMensaje] = useState("");
-
-  // FUNCIONES DE LA PÁGINA
-  // Formulario para crear usuario. Al terminar, se recarga la página
-  const submitForm = useCallback((e) => {
-    e.preventDefault();
-
-    // Se guardan los valores de las verificaciones del formulario
-    const emailVerificado = verificarEmail(email);
-    const passwordVerificado = verificarPassword(password);
-
-    // SE HACE LA VALIDACIÓN DEL FORMULARIO
-    // Validación de Email
-    if (!emailVerificado){
-      setErrorEmail(true);
-      setErrorEmailMensaje("Email Incorrecto!");
-    }
-    else{
-      setErrorEmail(false);
-      setErrorEmailMensaje("");
-    }
-
-    // Validación de Password
-    if (!passwordVerificado){
-      setErrorPassword(true);
-      seterrorPasswordMensaje("Password Incorrecto!");
-    }
-    else{
-      setErrorPassword(false);
-      seterrorPasswordMensaje("");
-    }
-
-    // Si todas las verificaciones pasaron, se inicia el proceso de crear un usuario
-    // y logearlo en el sistema.
-    if (emailVerificado && passwordVerificado){
-      setSubmitting(true);
-    }
-  },[email,password]);
-
   // HOOKS
-  // Con los datos del usuario, se crea un usuario en la BD local como también
-  // en Firebase Auth
-  useEffect(() => {
-    async function logearUsuario() {
-      const userData = { email, password };
+  // Hooks de Formik. Se definen los valores del formulario, la función validadora y
+  // la función para logear al Usuario
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: ""
+    },
+    validate: (valores) => {
+      let errores = {};
 
+      // Validación de email
+      if(!valores.email){
+        errores.email = "Por favor ingresa un email";
+      } else if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(valores.email)){
+        errores.email = "Email no válido";
+      }
+
+      // Validación de password
+      if(!valores.password){
+        errores.password = "Por favor ingresa un password";
+      } else if (valores.password.length < 6){
+        errores.password = "La contraseña debe de ser de 6 caracteres de largo";
+      }
+
+      return errores;
+    },
+    onSubmit: async (valores) => {
       // Se logea al usuario
       try {
-        await logIn(userData.email, userData.password);
-        setEmail("");
-        setPassword("");
-        setSubmitting(false);
+        await logIn(valores.email, valores.password);
+        formik.resetForm();
         navigate("/");
       } catch (error) {
         toastRef.current.show({severity: "error", summary: "Failure", detail: error.message});
       } 
     }
-
-    if(submitting)
-      logearUsuario();
-  },[submitting])
+  });
 
   // COMPONENTE
   return (
@@ -120,36 +84,34 @@ export const LoginPage = () => {
           <span className="p-float-label">
             <InputText 
               id="email" 
-              value={email} 
-              onChange={(event) => {
-                setEmail(event.target.value);
-              }}
-              className={`inputfield w-full ${errorEmail && "p-invalid"}`}
+              name="email"
+              value={formik.values.email} 
+              onChange={formik.handleChange}
+              className={`inputfield w-full ${formik.touched.email && formik.errors.email && "p-invalid"}`}
             />
             <label htmlFor="email">Email</label>
           </span>
-          {errorEmail && <small className="p-error">{errorEmailMensaje}</small>}
+          {formik.touched.email && formik.errors.email && <small className="p-error">{formik.errors.email}</small>}
         </div>
           
         <div className="field">
           <span className="p-float-label">
             <Password 
               id="password" 
-              value={password} 
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
+              name="password"
+              value={formik.values.password} 
+              onChange={formik.handleChange}
               feedback={false}
-              className={errorPassword && "p-invalid"}
+              className={formik.touched.password && formik.errors.password && "p-invalid"}
               inputClassName="inputfield w-full"
             />
             <label htmlFor="password">Password</label>
           </span>
-          {errorPassword && <small className="p-error">{errorPasswordMensaje}</small>}
+          {formik.touched.password && formik.errors.password && <small className="p-error">{formik.errors.password}</small>}
         </div>
 
         {/* Acciones de la página */}
-        <SubmitButton onClick={ submitForm } label="Enviar" />
+        <SubmitButton onClick={formik.handleSubmit} label="Enviar" />
         <p className={`${styles.textoForma}`}>¿Aún no tienes una cuenta?
         <Link to="/register"> Registrate </Link></p>
       </div>

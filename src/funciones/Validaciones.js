@@ -26,11 +26,11 @@
             // 241: ñ, 243: ó, 250: ú
 
             const caracter = nombre.charCodeAt(i);
-            if ( caracter == 32 || caracter == 46 || ( caracter >= 65 && caracter <= 90 ) || 
-               ( caracter >= 97 && caracter <= 122 ) || caracter == 193 || caracter == 201 || 
-                 caracter == 205 || caracter == 209 || caracter == 211 || caracter == 218 ||
-                 caracter == 225 || caracter == 233 || caracter == 237 || caracter == 241 ||
-                 caracter == 243 || caracter == 250 )
+            if ( caracter === 32 || caracter === 46 || ( caracter >= 65 && caracter <= 90 ) || 
+               ( caracter >= 97 && caracter <= 122 ) || caracter === 193 || caracter === 201 || 
+                 caracter === 205 || caracter === 209 || caracter === 211 || caracter === 218 ||
+                 caracter === 225 || caracter === 233 || caracter === 237 || caracter === 241 ||
+                 caracter === 243 || caracter === 250 )
                 continue;
             else 
                 // Existen caracteres no válidos en el nombre
@@ -42,64 +42,3 @@
     // El campo de Nombre está vacío
     return "Falta nombre";
 };
-
-/**************************
- * Verifica que la edad sea un entero. La forma hace la validación
- * que el rango de edad sea entre 18 a 99 años.
- * @param {number} edad La edad a validar
- * @return {boolean} Determina si la Edad es válida o no
- */
-export const verificarEdad = ( edad ) => {
-  if(Number.isInteger(parseInt(edad)))
-    return true;
-  else
-    return false;
-};
-
-/**************************
- * Verifica que el ID que se haya pasado no sea un string vacio
- * @param {number} edad La edad a validar
- * @return {bolean} Determina si el ID es válido o no
- */
-export const verificarId = ( id ) => {
-  if (id !== "")
-    return true;
-  else
-    return false;
-};
-
-/**************************
- * Verifica que el email tenga el formato correcto
- * @param {string} password El email a validar
- * @return {bolean} Determina si el password es válido o no
- */
-export const verificarEmail = ( email ) => {
-  if (email && email.includes("@") && email.includes(".com") && email[0] !== "@")
-    return true;
-  else
-    return false;
-}
-
-/**************************
- * Verifica que el password sea de al menos 6 caracteres
- * @param {string} password El password a validar
- * @return {bolean} Determina si el password es válido o no
- */
-export const verificarPassword = ( password ) => {
-  if (password.length >= 6)
-    return true;
-  else
-    return false;
-}
-
-/**************************
- * Verifica que no sea null
- * @param {image} image La imagen a validar
- * @return {bolean} Determina si el password es válido o no
- */
- export const verificarNoNull = ( imagen ) => {
-  if (imagen)
-    return true;
-  else
-    return false;
-}

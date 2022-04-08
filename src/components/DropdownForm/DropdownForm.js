@@ -9,35 +9,42 @@ import { Dropdown } from 'primereact/dropdown';
  * 
  * @member
  * @property {array} opciones Arreglo con las opciones del dropdown
- * @property {string} label Nombre del campo
- * @property {array} values Arreglo con los valores seleccionados en la Form
- * @property {function} onChangeFunction Función para cambiar el valor del estado
+ * @property {string} label Nombre del Input a desplegar
+ * @property {string} name Identificador del Input para Formik
+ * @property {array} value Arreglo con los valores seleccionados en la Form
+ * @property {function} onChange Función para cambiar el valor del estado
+ * @property {string} error Mensaje de error regresado por Formik
+ * @property {string} touched Identificador de si se interactúo con el input o no
  * @example
  *  <DropdownForm
- *    label="Paises"
- *    opciones={listaPaises}
- *    values={paises}
- *    onChangeFunction={(event) => {...}}
+ *   label="Pais"
+ *   name="pais"
+ *   opciones={listaPaises}
+ *   value={formik.values.pais}
+ *   onChange={formik.handleChange}
+ *   error={formik.errors.pais}
+ *   touched={formik.touched.pais}
  *  />
  */
 export function DropdownForm(props) {
-  const { options, label, value, onChange, errorState, errorText } = props;
+  const { options, label, name, value, onChange, error, touched } = props;
 
   return (
     <div>
       <span className="p-float-label">
           <Dropdown 
-            inputId={`dropdown-${label}`} 
+            inputId={`dropdown-${name}`}
+            name={name} 
             options={options} 
             optionLabel="nombre"
             optionValue="_id"
             onChange={onChange} 
             value={value} 
-            className={`inputfield w-full ${errorState && "p-invalid"}`}
+            className={`inputfield w-full ${touched && error && "p-invalid"}`}
           />
-          <label htmlFor={`dropdown-${label}`}>{label}</label>
+          <label htmlFor={`dropdown-${name}`}>{label}</label>
       </span>
-      {errorState && <small className="p-error">{errorText}</small>}
+      {touched && error && <small className="p-error">{error}</small>}
     </div>
   );
 }

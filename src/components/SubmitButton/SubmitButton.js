@@ -17,6 +17,7 @@ export const SubmitButton = (props) => {
     <Button
       label={label}
       onClick={onClick} 
+      type="submit"
     />
   );
 };
